@@ -53,19 +53,25 @@ const AboutData = [
         data: [
             {
                 title: "",
-                description_vi: "Tên ứng dụng: Hoc Excel (E2SOFT)",
+                description_vi: "Tên ứng dụng: Hoc Excel",
                 note: "",
                 explanation: "",
             },
             {
                 title: "",
-                description_vi: "Phiên bản: 1.1.0",
+                description_vi: "Tên gọi khác: (E2SOFT)",
                 note: "",
                 explanation: "",
             },
             {
                 title: "",
-                description_vi: "Ngày xuất bản: 11/12/2021",
+                description_vi: "Phiên bản: 1.3.0",
+                note: "",
+                explanation: "",
+            },
+            {
+                title: "",
+                description_vi: "Ngày xuất bản: 13/15/2021",
                 note: "",
                 explanation: "",
             },
@@ -85,13 +91,19 @@ const AboutData = [
         data: [
             {
                 title: "",
-                description_vi: "Mọi thắc mắc và đóng góp ý kiến xin vui lòng liên hệ địa chỉ sau đây:",
+                description_vi: "Mọi thắc mắc và đóng góp ý kiến xin vui lòng liên hệ:",
                 note: "",
                 explanation: "",
             },
             {
                 title: "",
-                description_vi: "Email: hocexcel.e2soft@gmail.com",
+                description_vi: "Email: pmkha92@gmail.com",
+                note: "",
+                explanation: "",
+            },
+            {
+                title: "",
+                description_vi: "Điện thoại: +84355210716",
                 note: "",
                 explanation: "",
             },
@@ -103,7 +115,7 @@ const AboutData = [
         icon: "shield-account",
         description_en: "",
         description_vi: "Liên hệ và hỗ trợ",
-        data: [           
+        data: [
         ]
     },
 

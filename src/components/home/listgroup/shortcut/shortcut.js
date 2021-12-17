@@ -1,10 +1,10 @@
-import React, { useState,  } from 'react';
-import { StyleSheet, View, Text, FlatList, TextInput, KeyboardAvoidingView, SafeAreaView, TouchableNativeFeedback } from 'react-native';
+import React, { useState, } from 'react';
+import { StyleSheet, View, Text, FlatList, TextInput,SafeAreaView, TouchableNativeFeedback, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FocusAwareStatusBar from '../../../header/statusBar';
-import {BannerAdSize, BannerAd} from '@react-native-firebase/admob';
+
+import Banner from '../../../admob/banner';
 
 const ShortcutDetail = ({ navigation, route }) => {
     // console.log(route.params)
@@ -19,18 +19,9 @@ const ShortcutDetail = ({ navigation, route }) => {
         );
     }
     return (
-        <KeyboardAvoidingView >
-            <SafeAreaView>
-              
-                <BannerAd
-                    unitId="ca-app-pub-8774393929760728/9421290027"
-                    // unitId={'ca-app-pub-3940256099942544/6300978111'}
-                    size={BannerAdSize.FULL_BANNER}
-                    requestOptions={{
-                        requestNonPersonalizedAdsOnly: false,
-                    }}
-                />
-                <FocusAwareStatusBar backgroundColor={'white'} barStyle="dark-content" />
+        <SafeAreaView style={{ flex: 1 }} >
+            <StatusBar backgroundColor={'white'} barStyle="dark-content" />
+            <View style={{ top: StatusBar.currentHeight }}>
                 <TouchableNativeFeedback>
                     <View style={styles.shortcutSearch} >
                         <Icon name={'arrow-back-ios'} size={28} style={styles.goBackIcon} onPress={() => navigation.goBack()} />
@@ -41,6 +32,7 @@ const ShortcutDetail = ({ navigation, route }) => {
                     </View>
                 </TouchableNativeFeedback>
                 <View style={styles.container}>
+                    <Banner />
                     <FlatList
                         data={ShortcutData}
                         keyExtractor={(item, index) => String(index)}
@@ -64,8 +56,8 @@ const ShortcutDetail = ({ navigation, route }) => {
                     />
                 </View>
 
-            </SafeAreaView>
-        </KeyboardAvoidingView>
+            </View>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
@@ -119,8 +111,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomColor: 'grey',
         borderBottomWidth: 0.25,
-
-
     },
     textTitle: {
         width: '40%',
@@ -134,9 +124,6 @@ const styles = StyleSheet.create({
         padding: 5,
         color: "black",
     },
-    adMobBanner: {
-        width: '100%',
-        justifyContent: 'center', alignItems: 'center',
-    },
+    
 })
 export default ShortcutDetail

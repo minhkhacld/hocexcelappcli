@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, FlatList, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch } from 'react-redux';
 import { setListItemHeaderBarName } from '../../../redux/reducer';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 const Listgroup = ({ navigation, ListGroupDATA }) => {
-    const [listHeight, setListHeight] = useState(0);
     const dispatch = useDispatch();
     return (
         <View style={{ flex: 3 }}
@@ -31,7 +29,6 @@ const Listgroup = ({ navigation, ListGroupDATA }) => {
                                 <ListItem containerStyle={styles.content} >
                                     <Icon name={item.icon} size={40} style={styles.icon} />
                                     <ListItem.Content style={{ height: "100%", width: "100%", }}>
-                                        {/* <ListItem.Title style={styles.description}>{item.vi}</ListItem.Title> */}
                                         <Text style={styles.description}>{item.vi}</Text>
                                     </ListItem.Content>
                                     <ListItem.Chevron />
@@ -56,7 +53,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     touchableOpacity: {
-        height: "25%"
+        height: "25%",
+        maxHeight: 70,
     },
     content: {
         justifyContent: "center",
@@ -70,7 +68,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         fontSize: 14,
-        // height: "100%",
         color: '#14279B',
     },
     icon: {

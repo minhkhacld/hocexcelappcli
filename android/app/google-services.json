@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "625582448507",
+    "firebase_url": "https://myfristapp-273612.firebaseio.com",
+    "project_id": "myfristapp-273612",
+    "storage_bucket": "myfristapp-273612.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625582448507:android:0b181cf33b63f46a1b67de",
+        "android_client_info": {
+          "package_name": "com.hocexcel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625582448507-u8db6j3ube1cnc3edf2b51h3pkb2v9vr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hocexcel",
+            "certificate_hash": "c403337965ce111fb26b6a5708b4d46ad0ffa15d"
+          }
+        },
+        {
+          "client_id": "625582448507-0ru70oe939in5be3861nitame4e6mcud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWsdvnqWMo_jMCslRkE54vcQZtjZxzHDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625582448507-0ru70oe939in5be3861nitame4e6mcud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

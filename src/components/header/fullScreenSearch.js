@@ -7,12 +7,10 @@ import { setItemDetailHeaderBar } from '../../redux/reducer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FocusAwareStatusBar from './statusBar';
 
 const FullScreenSearch = ({ navigation, SearchDATA }) => {
     const [searchValue, setSearchValue] = useState('');
     const [searchHistory, setSearchHistory] = useState([]);
-    // console.log("🚀 ~ file: fullScreenSearch.js ~ line 9 ~ FullScreenSearch ~ SearchDATA", SearchDATA);
     const dispatch = useDispatch();
     const reducer = useSelector((store) => {
         return store.Reducer
@@ -24,23 +22,17 @@ const FullScreenSearch = ({ navigation, SearchDATA }) => {
                 const keys = await AsyncStorage.getAllKeys();
                 for (const key of keys) {
                     const val = await AsyncStorage.getItem(key);
-
                     result[key] = JSON.parse(val);
                 }
                 return result
             } catch (error) {
-
             }
         }
         localStorageData().then(async respone => {
-            // await AsyncStorage.clear();
             if (respone) {
                 setSearchHistory(respone);
             }
-            else {
-
-            }
-        })
+        });
     }, []);
 
     const storeData = async (value) => {
@@ -49,29 +41,24 @@ const FullScreenSearch = ({ navigation, SearchDATA }) => {
             await AsyncStorage.setItem(value.item, jsonValue);
             return
         } catch (e) {
-
         }
     };
-
-    // console.log("🚀 ~ file: fullScreenSearch.js ~ line 14 ~ FullScreenSearch ~ searchHistory", searchHistory);
-    let SearchARR = SearchDATA.filter(d => d.data.some(a => a.title.toLowerCase().includes(searchValue.toLowerCase()))).slice(0, 10)
-    const SuggestionTextBGColor = ['#38A3A5', '#57CC99', '#80ED99', '#FFB319', '#FFE194', '#E8F6EF', '#B8DFD8',
-        '#3DB2FF', '#FFEDDA', '#FFB830', '#FF2442', '#FCFFA6', '#C1FFD7', '#B5DEFF', '#CAB8FF', '#FFB319',
-        '#FFE194', '#B8DFD8', '#0CECDD', '#FF67E7', '#38A3A5'
-        , '#57CC99', '#80ED99', '#E8F6EF',
-    ];
+    // console.log(searchHistory)
+    let SearchARR = searchValue === "" ? [] : SearchDATA.filter(d => d.data.some(a => a.title.toLowerCase().includes(searchValue.toLowerCase()))).slice(0, 10)
 
     return (
         reducer.searchDropdownVisible &&
         <SafeAreaView style={[styles.fullScreenSearch]}>
-
+            <StatusBar
+                backgroundColor={'transparent'} translucent={true} barStyle="dark-content" />
             <View style={styles.search}>
                 <StatusBar backgroundColor={'white'} barStyle="dark-content" />
                 <Icon name={'arrow-back-ios'} size={30} style={styles.goBackIcon} onPress={() => dispatch(closeSearchDropDown())} />
                 <TextInput
                     style={styles.input}
                     onChangeText={(e) => setSearchValue(e)}
-                    placeholder='Học excel rất thú vị...'
+                    placeholder='Tìm kiếm các hàm, nhóm hàm...'
+                    placeholderTextColor={'#14279B'}
                     autoFocus={true}
                     returnKeyType='none'
                     value={searchValue} />
@@ -79,8 +66,7 @@ const FullScreenSearch = ({ navigation, SearchDATA }) => {
             </View>
             <View style={styles.body}>
                 <View style={styles.resultContent}>
-                    {searchValue === "" && Object.values(searchHistory).length > 0 && Object.values(searchHistory).map((r, idx) => {
-                        console.log(r)
+                    {/* {searchValue === "" && Object.values(searchHistory).length > 0 && Object.values(searchHistory).map((r, idx) => {
                         let item = SearchDATA.filter(d => d.data.some(a => a.title.toLowerCase().includes(r.item.toLowerCase()))).slice(0, 10)[0];
                         return (
                             <TouchableOpacity key={String(idx)}
@@ -88,22 +74,23 @@ const FullScreenSearch = ({ navigation, SearchDATA }) => {
                                     navigation.navigate('ListItemDetail', { item, index: r.index });
                                     dispatch(setItemDetailHeaderBar(item.title))
                                 }}
-                                style={[styles.resultOutline, { backgroundColor: SuggestionTextBGColor[idx] }]}>
+                                style={[styles.resultOutline,]}>
                                 <Text style={styles.resultText}>{r.item}</Text>
                             </TouchableOpacity>
                         )
                     })
-                    }
+                    } */}
                     {
-                        searchValue !== "" && SearchARR.length > 0 && SearchARR.map(item => item.data.map((r, index) => {
+                        SearchARR.length > 0 && SearchARR.slice(0, 1).map(item => item.data.map((r, index) => {
                             return (
-                                <TouchableOpacity key={String(index)}
+                                <TouchableOpacity key={String(index)} title={r.title}
                                     onPress={() => {
                                         navigation.navigate('ListItemDetail', { item, index });
                                         dispatch(setItemDetailHeaderBar(item.title));
                                         storeData({ item: r.title, index: index });
                                     }}
-                                    style={[styles.resultOutline, { backgroundColor: SuggestionTextBGColor[index] }]}>
+                                    style={[styles.resultOutline,]}
+                                >
                                     <Text style={styles.resultText}>{r.title}</Text>
                                 </TouchableOpacity>
                             )
@@ -143,9 +130,10 @@ const styles = StyleSheet.create({
         minHeight: 40,
         borderRadius: 40,
         paddingLeft: '10%',
+        color: '#14279B'
     },
     goBackIcon: {
-        color: '#38A3A5',
+        color: '#14279B',
         position: 'absolute',
         top: '36%',
         left: '5%',
@@ -153,7 +141,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         position: 'absolute',
-        color: 'grey',
+        color: '#14279B',
         top: '40%',
         left: '18%',
     },
@@ -172,14 +160,17 @@ const styles = StyleSheet.create({
     },
     resultOutline: {
         flexDirection: 'row',
-        backgroundColor: 'tomato',
-        padding: 5,
-        borderRadius: 5,
+        backgroundColor: '#2089DC',
+        color: 'white',
+        padding: 10,
+        height: 40,
+        borderRadius: 20,
+        paddingHorizontal: 20,
         marginHorizontal: 10,
         marginVertical: 10,
     },
     resultText: {
-        fontSize: 12
+        fontSize: 12, color: 'white', fontWeight: 'bold'
     },
 
 })

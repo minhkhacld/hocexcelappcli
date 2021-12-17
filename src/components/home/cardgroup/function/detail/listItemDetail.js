@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Dimensions, FlatList, Text, SafeAreaView, StatusBar } from 'react-native';
+import React, { useState, useRef, useCallback } from 'react';
+import { StyleSheet, View, Dimensions, FlatList, Text, SafeAreaView, StatusBar, RefreshControl } from 'react-native';
 import { ListItem, Image } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { CreateNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,15 +7,28 @@ import path from './global';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
 import { setItemDetailHeaderBar } from '../../../../../redux/reducer';
-import { BannerAdSize, BannerAd } from '@react-native-firebase/admob';
+import Banner from '../../../../admob/banner';
+import {
+    AdEventType
+} from '@react-native-firebase/admob';
 
 
-const ListItemDetail = ({ navigation, route }) => {
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
+const ListItemDetail = ({ navigation, route, interstitial }) => {
+
+
     const [state, setState] = useState({
         itemTitle: route.params.item.title,
         detailData: route.params.item.data,
         listIndex: route.params.listIndex
     });
+    const [loaded, setLoaded] = React.useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+
+
     const dispatch = useDispatch();
     let myList = useRef();
     let DATA = route.params.DATA;
@@ -23,8 +36,54 @@ const ListItemDetail = ({ navigation, route }) => {
     let focusIndex = route.params.index;
 
 
+    React.useEffect(() => {
+
+        const eventListener = interstitial.onAdEvent(type => {
+            console.log('interstitialAd', type)
+            if (type === AdEventType.LOADED) {
+                setLoaded({ ...loaded, interstitial: true });
+            }
+            if (type === AdEventType.CLOSED) {
+                setLoaded({ ...loaded, interstitial: false });
+                //reload ad 
+                interstitial.load();
+            }
+        });
+        // Start loading the interstitial straight away
+        interstitial.load();
+
+        // Unsubscribe from events on unmount
+        return () => {
+            eventListener();
+        };
+    }, []);
+
+    const onRefresh = useCallback(() => {
+        const eventListener = interstitial.onAdEvent(type => {
+
+            if (type === AdEventType.LOADED) {
+                setLoaded({ ...loaded, interstitial: true });
+            }
+            if (type === AdEventType.CLOSED) {
+                setLoaded({ ...loaded, interstitial: false });
+                //reload ad 
+                interstitial.load();
+            }
+        });
+        // Start loading the interstitial straight away
+        interstitial.load();
+        setRefreshing(true);
+        wait(500).then(() => setRefreshing(false));
+        // Unsubscribe from events on unmount
+        return () => {
+            eventListener();
+        };
+    }, []);
+
+
+
     return (
-        <SafeAreaView style={styles.container}>        
+        <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={'white'} barStyle="dark-content" />
             <FlatList
                 keyExtractor={(item, index) => String(index)}
@@ -32,6 +91,12 @@ const ListItemDetail = ({ navigation, route }) => {
                 showsHorizontalScrollIndicator={false}
                 ref={myList}
                 data={state.detailData}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
                 initialScrollIndex={focusIndex === undefined ? 0 : focusIndex}
                 renderItem={({ item, index }) => {
                     return (
@@ -68,6 +133,7 @@ const ListItemDetail = ({ navigation, route }) => {
             />
             {DATA &&
                 <Icon name="chevron-double-right" size={35} style={styles.goforwardIcon} onPress={() => {
+                    interstitial.show()
                     if (state.listIndex < DATA.length - 1) {
                         setState({
                             ...state,
@@ -90,14 +156,8 @@ const ListItemDetail = ({ navigation, route }) => {
                     }
                 }} />
             }
-            <BannerAd
-                unitId="ca-app-pub-8774393929760728/9421290027"
-                // unitId={'ca-app-pub-3940256099942544/6300978111'}
-                size={BannerAdSize.FULL_BANNER}
-                requestOptions={{
-                    requestNonPersonalizedAdsOnly: false,
-                }}
-            />
+
+            <Banner />
 
         </SafeAreaView>
     )
@@ -106,7 +166,7 @@ const ListItemDetail = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 40,
+        paddingBottom: 50,
     },
     pageHeader: {
         height: 50,

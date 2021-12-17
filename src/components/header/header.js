@@ -20,10 +20,9 @@ const Header = () => {
                         <TextInput
                             style={styles.input}
                             onFocus={() => dispatch(setSearchValue())}
-                            placeholder='Tìm kiếm hàm, các hướng dẫn...'
+                            placeholder='Tìm kiếm hàm, nhóm hàm...'
                             placeholderTextColor="#14279B"
                         />
-
                     </View>
                 </LinearGradient>
                 <Icon name={'search'} size={20} style={styles.icon} color={'#14279B'} />
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: '80%',
         height: 40,
-        paddingLeft: 30,
+        paddingLeft: 35,
         borderRadius: 20,
         top: ((90 - StatusBar.currentHeight) - 40) / 2,
         position: 'absolute',

@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useDispatch } from 'react-redux';
 import { setListItemHeaderBarName } from '../../../redux/reducer';
 
+
 const CardGroup = ({ navigation, CardGroupDATA }) => {
     const dispatch = useDispatch();
     return (
@@ -70,11 +71,11 @@ const styles = StyleSheet.create({
     },
     content: {
         width: '50%',
-        height: 145,
+        height: 140,
+        minHeight: 100,
         borderRadius: 30,
         justifyContent: 'space-evenly',
         alignItems: 'center',
-
     },
     touchableOpacity: {
         width: '70%',
@@ -99,11 +100,12 @@ const styles = StyleSheet.create({
     icon: { color: '#14279B' },
     title: {
         height: '35%',
-        width: '65%',
+        width: '60%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
+
     },
     vi: {
         fontSize: 14, width: "90%",

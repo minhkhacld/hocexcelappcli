@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Text, SafeAreaView, RefreshControl, Pressable, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, SafeAreaView, RefreshControl, Alert, Dimensions, ScrollView, } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,7 +9,14 @@ import FocusAwareStatusBar from '../header/statusBar';
 import Sound from 'react-native-sound';
 import SusscessSound from '../../asset/audio/click_success.wav';
 import ErrorSound from '../../asset/audio/click_error.wav';
-import admob, {BannerAdSize, BannerAd, } from '@react-native-firebase/admob';
+import Banner from '../admob/banner';
+import {
+    AdEventType,
+    RewardedAdEventType
+} from '@react-native-firebase/admob';
+import LinearGradient from 'react-native-linear-gradient';
+import ModalClaimReward from './modalClaimReward';
+import moment from 'moment';
 
 
 const wait = (timeout) => {
@@ -17,10 +24,11 @@ const wait = (timeout) => {
 }
 
 
-
-
-
-const QuizGame = ({ navigation, route }) => {
+const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
+    const [loaded, setLoaded] = React.useState({
+        interstitial: false,
+        rewarded: false,
+    });
     const [state, setState] = useState({
         DATA: QuizGameData
     });
@@ -31,35 +39,89 @@ const QuizGame = ({ navigation, route }) => {
     const [showNextButton, setShowNextButton] = useState(false);
     const [score, setScore] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
-    const [storeMessage, setStoreMessage] = useState('Lưu hiện tại');
+    const [storeMessage, setStoreMessage] = useState('Lưu');
+    const [ignoreWrongAsw, setIgnoreWrongAsw] = useState({
+        count: 5,
+        time: null,
+    });
+    const [modalVisible, setModalVisible] = useState(false);
 
 
     useEffect(() => {
         const localStorageData = async () => {
             try {
-                const result = await AsyncStorage.getItem('currentQuestionIndex');
-                return result !== "" ? JSON.parse(result) : null;
+                let result = await AsyncStorage.getItem('currentQuestionIndex');
+                let ignoreKey = await AsyncStorage.getItem('ignoreKey');
+                // console.log(result, ignoreKey);
+                return {
+                    questionInfo: result !== null ? JSON.parse(result) : { qsIndex: 0, score: score ? score : 0 },
+                    ignoreKey: ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null }
+                }
             } catch (error) {
                 console.error(error);
             };
-        }
+        };
+
         localStorageData().then(async respone => {
-            if (respone) {
-                setCurrentQuestionIndex(respone);
+            let checkValidTime
+            if (respone.ignoreKey.time !== null) {
+
+                checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
             }
-            else {
-                // console.log('no storage data');
-                // setState({...state,DATA:QuizGameData});
-                setCurrentQuestionIndex(0);
-            };
+            // console.log('checkValidTime', checkValidTime);
+            // console.log('loadlocastorage', respone)
+            setCurrentQuestionIndex(respone.questionInfo.qsIndex);
+            setScore(respone.questionInfo.score)
+            setIgnoreWrongAsw({
+                count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
+                time: checkValidTime > 0 ? null : respone.ignoreKey.time,
+            });
         });
 
 
+        const rewardEventListener = rewarded.onAdEvent((type, error, reward) => {
+            // console.log('rewardedAd', type, error, reward);
+            if (type === RewardedAdEventType.LOADED) {
+                setLoaded({ ...loaded, rewarded: true });
+            }
+            if (type === RewardedAdEventType.EARNED_REWARD) {
+                // console.log('User earned reward of ', reward);
+                if (reward !== {}) {
+                    setIgnoreWrongAsw({
+                        ...ignoreWrongAsw, count: 2
+                    })
+                    setModalVisible(false)
+                }
+            }
+            if (type === AdEventType.CLOSED) {
+                // console.log('close reward add');
+                setLoaded({ ...loaded, rewarded: false });
+                //reload ad 
+                rewarded.load();
+            }
+        });
+
+        const eventListener = interstitial.onAdEvent(type => {
+            // console.log('interstitialAd', type)
+            if (type === AdEventType.LOADED) {
+                setLoaded({ ...loaded, interstitial: true });
+            }
+            if (type === AdEventType.CLOSED) {
+                setLoaded({ ...loaded, interstitial: false });
+                //reload ad 
+                interstitial.load();
+            }
+        });
+        // Start loading the interstitial straight away
+        interstitial.load();
+        rewarded.load();
+        // Unsubscribe from events on unmount
+        return () => {
+            eventListener();
+            rewardEventListener();
+        };
     }, []);
 
-
-
-    Sound.setCategory('Playback');
     // Load the sound file 'whoosh.mp3' from the app bundle
     // See notes below about preloading sounds within initialization code below.
 
@@ -70,20 +132,37 @@ const QuizGame = ({ navigation, route }) => {
         setRefreshing(true);
         setCorrectOption(null);
         setIsOptionDisabled(false);
-        setScore(score);
         setShowNextButton(false);
         setCurrentOptionSelected(null);
         wait(500).then(() => setRefreshing(false));
     }, []);
 
     const onReset = () => {
-        setCurrentQuestionIndex(0);
-        setScore(0);
-        setCurrentOptionSelected(null);
-        setCorrectOption(null);
-        setIsOptionDisabled(false);
-        setShowNextButton(false);
-        AsyncStorage.clear();
+        Alert.alert(
+            "Reset",
+            "Bạn có xóa toàn bộ kết quả trước và bắt đầu lại từ đầu không?",
+            [
+                {
+                    text: "Có",
+                    onPress: () => {
+                        setCurrentQuestionIndex(0);
+                        setScore(0);
+                        setCurrentOptionSelected(null);
+                        setCorrectOption(null);
+                        setIsOptionDisabled(false);
+                        setShowNextButton(false);
+                        setIgnoreWrongAsw({
+                            count: 5, time: null,
+                        });
+                        AsyncStorage.clear();
+                        interstitial.show();
+
+                    },
+
+                },
+                { text: "Không", onPress: () => console.log("Cancle Pressed"), style: "cancel" }
+            ]
+        );
     };
 
     Sound.setCategory('Playback');
@@ -93,10 +172,8 @@ const QuizGame = ({ navigation, route }) => {
             return;
         }
         // loaded successfully
-        // console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
         // Play the sound with an onEnd callback
-
-        whoosh.play((success) => {
+        successClick.play((success) => {
             if (success) {
                 // console.log('successfully finished playing');
             } else {
@@ -110,9 +187,8 @@ const QuizGame = ({ navigation, route }) => {
             return;
         }
         // loaded successfully
-        // console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
         // Play the sound with an onEnd callback
-        whoosh.play((success) => {
+        errorClick.play((success) => {
             if (success) {
                 // console.log('successfully finished playing');
             } else {
@@ -121,17 +197,24 @@ const QuizGame = ({ navigation, route }) => {
         });
     });
 
-
-
-    const storeData = async (value) => {
+    const storeData = async (qsIndex, score) => {
         try {
-            const jsonValue = JSON.stringify(value);
+            const jsonValue = JSON.stringify({ qsIndex: qsIndex, score: score });
             await AsyncStorage.setItem('currentQuestionIndex', jsonValue);
             setStoreMessage('Đã Lưu');
             return
         } catch (e) {
-            console.log("🚀 ~ file: fullScreenSearch.js ~ line 54 ~ storeData ~ e", e);
             setStoreMessage('Lưu thất bại');
+        }
+    };
+
+    const storeIgnoreAsw = async (value) => {
+        try {
+            const jsonValue = JSON.stringify(value);
+            await AsyncStorage.setItem('ignoreKey', jsonValue);
+            return
+        } catch (e) {
+            console.log(err)
         }
     };
 
@@ -141,34 +224,64 @@ const QuizGame = ({ navigation, route }) => {
         setCorrectOption(correct_option);
         setIsOptionDisabled(true);
         setShowNextButton(true);
-
         if (selectedOption === correct_option) {
             setScore(score + 1);
             successClick.play();
         }
         else {
+            setIgnoreWrongAsw({
+                ...ignoreWrongAsw, count: ignoreWrongAsw.count > 1 ? ignoreWrongAsw.count - 1 : 0
+            })
             errorClick.play();
         }
     };
 
     const handleNext = () => {
-        if (currentQuestionIndex == state.DATA.length - 1) {
-            //show modal
-            console.log('max');
-            navigation.navigate('QuizGameResult', { score, QuestionLength: state.DATA.length });
+        if (ignoreWrongAsw.time === null) {
+            let flag = [19, 39, 59].filter(num => num == currentQuestionIndex)
+            if (flag.length > 0 && loaded.interstitial) {
+                interstitial.show();
+            }
+            if (ignoreWrongAsw.count === 0) {
+                let keyIgnoreObj = {
+                    lastUse: 0,
+                    time: moment().format("YYYY-MM-DD"),
+                };
+                setModalVisible(true);
+                setShowNextButton(false);
+                storeIgnoreAsw(keyIgnoreObj);
+                storeData(currentQuestionIndex, score);
+            }
+            if (currentQuestionIndex == state.DATA.length - 1) {
+                //show modal           
+                navigation.navigate('QuizGameResult', { score, QuestionLength: state.DATA.length });
+            } else {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+                setCurrentOptionSelected(null);
+                setCorrectOption(null);
+                setIsOptionDisabled(false);
+                setShowNextButton(false);
+                setStoreMessage("Lưu");
+            };
+
         } else {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setCurrentOptionSelected(null);
-            setCorrectOption(null);
-            setIsOptionDisabled(false);
-            setShowNextButton(false);
-            setStoreMessage("Lưu hiện tại")
-        };
+            setModalVisible(true);
+        }
     };
 
-    // console.log(currentQuestionIndex)
-    // console.log(state.DATA.length)
-    // console.log("correctoption", correctOption)
+    // console.log(
+    //     "currentQuestionIndex", currentQuestionIndex,
+    //     "currentOptionSelected", currentOptionSelected,
+    //     "correctOption", correctOption,
+    //     "isOptionDisabled", isOptionDisabled,
+    //     "showNextButton", showNextButton,
+    //     "score", score,
+    //     "refreshing", refreshing,
+    //     "storeMessage", storeMessage,
+    //     "ignoreWrongAsw", ignoreWrongAsw,
+    //     "modalVisible", modalVisible,
+    // );
+
     return (
         <SafeAreaView style={styles.container}>
             <FocusAwareStatusBar
@@ -187,29 +300,31 @@ const QuizGame = ({ navigation, route }) => {
                     state.DATA.length > 0 &&
                     <View style={styles.content}>
                         <View style={styles.score}>
-                            <Text style={styles.scoreText}>{`Câu hỏi: ${currentQuestionIndex + 1}/${state.DATA.length}`}</Text>
-                            <Text style={styles.scoreText}>{'Điểm: ' + score}</Text>
+                            <View style={styles.iconGroupTop}>
+                                < Icon name={'head-question'} style={{ color: '#5CB85C' }} size={30} />
+                                <Text style={styles.scoreText}>
+                                    {`${currentQuestionIndex + 1}/${state.DATA.length}`}</Text>
+                            </View>
+                            <View style={styles.iconGroupTop}>
+                                < Icon name={'checkbox-multiple-marked-circle'} style={{ color: '#5CB85C' }} size={30} />
+                                <Text style={styles.scoreText}>
+                                    {score}</Text>
+                            </View>
+                            <View style={styles.iconGroupTop}>
+                                < Icon name={'key-outline'} style={{ color: '#5CB85C' }} size={30} />
+                                <Text style={styles.scoreText}>{ignoreWrongAsw.count}</Text>
+                            </View>
                             <TouchableOpacity style={styles.resetGroup}
-                                // onPress={interstitial
-                                // }
                                 onPress={() => { onReset() }}
                             >
-                                <Text style={styles.scoreText}>Chơi lại</Text>
-                                <Icon style={styles.resetIcon} name="reload" size={22} />
+                                <Icon style={styles.resetIcon} name="reload" size={30} color={'#5CB85C'} />
                             </TouchableOpacity>
                         </View>
                         <View style={styles.question}>
                             <View style={styles.questionContent}>
                                 <Text style={styles.questionText}>{state.DATA[currentQuestionIndex].question}</Text>
                             </View>
-                            <BannerAd
-                                unitId="ca-app-pub-8774393929760728/9421290027"
-                                // unitId={'ca-app-pub-3940256099942544/6300978111'}
-                                size={BannerAdSize.FULL_BANNER}
-                                requestOptions={{
-                                    requestNonPersonalizedAdsOnly: false,
-                                }}
-                            />
+                            <Banner />
                         </View>
                         <View style={styles.options}>
                             {
@@ -221,7 +336,7 @@ const QuizGame = ({ navigation, route }) => {
                                             borderColor: option === correctOption ? '#5CB85C' :
                                                 option === currentOptionSelected ? '#D9534F' : '#0A81AB'
                                         }]}
-                                            disabled={isOptionDisabled}
+                                            disabled={isOptionDisabled || ignoreWrongAsw.count === 0 ? true : false}
                                             onPress={() => {
                                                 validateOption(option);
                                             }} >
@@ -243,25 +358,42 @@ const QuizGame = ({ navigation, route }) => {
                                                     ) : null
                                             }
                                         </TouchableOpacity>)
-                                }
-
-                                )
+                                })
                             }
-
                         </View>
                         <View style={styles.handle}>
-                            <Pressable style={[styles.savebtn,]} onPress={() => storeData(currentQuestionIndex)}
-                            >
-                                <Text style={styles.savebtnText}>{storeMessage}</Text>
-                            </Pressable>
-                            <Pressable style={[styles.nextbtn, { opacity: showNextButton ? 1 : 0.6 }]} onPress={handleNext} disabled={showNextButton ? false : true}
-                            >
-                                <Text style={styles.nextbtnText}>Kế tiếp</Text>
-                            </Pressable>
+                            <LinearGradient colors={['#0093E9', '#80D0C7']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGroup}>
+                                <TouchableOpacity style={[styles.savebtn,]} onPress={() => storeData(currentQuestionIndex, score)}
+                                >
+                                    < Icon name={'content-save-outline'} style={{ color: 'white', marginRight: 5 }} size={25} />
+                                    <Text style={styles.savebtnText}>{storeMessage}</Text>
+                                </TouchableOpacity>
+                            </LinearGradient>
+                            <LinearGradient colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGroup}>
+                                <TouchableOpacity style={[styles.nextbtn,
+                                { opacity: ignoreWrongAsw.count === 0 ? 1 : !isOptionDisabled ? 0.5 : 1 }
+                                ]}
+                                    // disabled={ignoreWrongAsw.time !== null ? false : showNextButton ? false : true}
+                                    disabled={ignoreWrongAsw.count === 0 ? false : !isOptionDisabled ? true : false}
+                                    onPress={handleNext}
+                                >
+                                    {ignoreWrongAsw.count === 0 ?
+                                        < Icon name={'key'} style={{ color: 'white', marginRight: 5 }} size={25} />
+                                        :
+                                        < Icon name={'skip-next'} style={{ color: 'white', marginRight: 5 }} size={25} />
+                                    }
+                                    <Text style={styles.nextbtnText}>{ignoreWrongAsw.count === 0 ? "Lấy chìa" : "Kế tiếp"}</Text>
+                                </TouchableOpacity>
+                            </LinearGradient>
                         </View>
                     </View>
                 }
             </ScrollView>
+
+            {modalVisible && <ModalClaimReward modalVisible={modalVisible} setModalVisible={setModalVisible}
+                ignoreWrongAsw={ignoreWrongAsw} setIgnoreWrongAsw={setIgnoreWrongAsw} rewarded={rewarded}
+            />
+            }
         </SafeAreaView>
     )
 };
@@ -270,23 +402,37 @@ const styles = StyleSheet.create({
     container: { flex: 1 },
     contentContainerStyle: {
         flex: 1,
-        //  paddingBottom: 40
+        top: 15,
     },
     background: { flex: 1 },
-    content: { flex: 1, backgroundColor: '#1E3163' },
+    content: { flex: 1, backgroundColor: '#1E3163', paddingTop: 10 },
     score: {
-        flex: 1,
+        height: '8%',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        width: '100%',
+    },
+    iconGroupTop: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '25%',
     },
     scoreText: {
-        color: 'white', fontSize: 14,
+        color: 'white', fontSize: 15, marginLeft: 8
     },
-    resetGroup: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-    resetIcon: { color: 'white', marginLeft: 5 },
-    question: { flex: 3, justifyContent: 'space-between', },
+    resetGroup: {
+        width: '25%',
+        flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
+    },
+    resetIcon: { marginLeft: 15 },
+    question: {
+        height: '25%',
+        width: '100%',
+        justifyContent: 'space-between',
+        minHeight: 30,
+    },
     questionContent: { paddingLeft: 10, height: '60%' },
     imageFrame: {
         justifyContent: 'center',
@@ -298,7 +444,13 @@ const styles = StyleSheet.create({
         resizeMode: 'contain', marginBottom: 10, aspectRatio: 4 / 2
     },
     questionText: { color: 'white', fontSize: 15, fontWeight: 'bold', padding: 5, },
-    options: { flex: 4, padding: 5, justifyContent: 'space-evenly', alignItems: 'center' },
+    options: {
+        width: '100%',
+        height: '45%',
+        padding: 5,
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+    },
     option: {
         fontSize: 14, color: 'white', width: '90%', height: 30,
         lineHeight: 30,
@@ -306,39 +458,50 @@ const styles = StyleSheet.create({
     },
     touchableOpacity: {
         backgroundColor: '#0A81AB',
-        height: '20%', width: '95%',
-        borderRadius: 30, padding: 15, paddingLeft: 10,
+        height: '25%', maxHeight: 50, width: '95%',
+        borderRadius: 30, paddingLeft: 15, paddingRight: 15,
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
     },
     handle: {
-        flex: 2,
+        width: '100%',
+        height: '22%',
         padding: 5,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+        paddingBottom: 50,
+        minHeight: 40,
+    },
+    buttonGroup: {
+        width: '40%',
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 40,
+        borderRadius: 30,
+        height: 55,
     },
     nextbtn: {
-        backgroundColor: '#FFEF78',
-        height: 45,
-        width: '35%',
+        height: '100%',
+        minHeight: 45,
+        width: '100%',
+        flexDirection: 'row',
         borderRadius: 10, padding: 5, justifyContent: 'center', alignItems: 'center',
     },
-    nextbtnText: { color: "black", fontSize: 15, fontWeight: "bold" },
+    nextbtnText: { color: "white", fontSize: 15, fontWeight: "bold" },
     savebtn: {
-        backgroundColor: 'tomato',
         height: 45,
-        width: '35%',
+        width: '100%',
+        flexDirection: 'row',
         borderRadius: 10, padding: 5, justifyContent: 'center', alignItems: 'center',
     },
-    savebtnText: { color: "white", fontSize: 15, fontWeight: "bold", textAlign: 'center', },
+    savebtnText: {
+        color: "white", fontSize: 15, fontWeight: "bold", textAlign: 'center',
+    },
     adMobBanner: {
         width: '100%',
         justifyContent: 'center', alignItems: 'center',
     },
-    //Admoder
 
 })
 

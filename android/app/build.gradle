@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+// admob
+apply plugin: 'com.google.gms.google-services'
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 import com.android.build.OutputFile
 
@@ -136,8 +138,14 @@ android {
         applicationId "com.hocexcel"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.3"
+
+        //admob
+        //  multiDexEnabled true
+        //  aaptOptions{
+        //      noCompress "tflite","model"
+        //  }
     }
     splits {
         abi {
@@ -179,7 +187,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
-            // minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
@@ -203,10 +211,35 @@ android {
 
 dependencies {
     // compile project(':RNAdMob')
-    //  implementation 'com.google.android.gms:play-services-ads:20.5.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+
+    //firebase
+     // Import the Firebase BoM
+    //  implementation platform('com.google.firebase:firebase-bom:29.0.2')
+
+
+  // Add the dependency for the Firebase SDK for Google Analytics
+  // When using the BoM, don't specify versions in Firebase dependencies
+    //  implementation 'com.google.firebase:firebase-analytics'
+
+
+  // Add the dependencies for any other desired Firebase products
+  // https://firebase.google.com/docs/android/setup#available-libraries
+
+    //addmob
+    implementation 'com.google.android.gms:play-services-ads:19.8.0'
+        // implementation 'com.google.android.gms:play-services-ads:18.1.0'
+    //  implementation 'com.google.android.gms:play-services-ads:20.5.0'
+//      implementation( project(':react-native-admob') ){
+//     exclude group: "com.google.android.gms"
+//   }
+    // implementation "com.google.android.gms:play-services-ads:17.2.1"
+    // implementation "com.google.firebase:firebase-ads:17.2.1"
+    implementation 'com.android.support:multidex:1.0.3'
+
+
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 

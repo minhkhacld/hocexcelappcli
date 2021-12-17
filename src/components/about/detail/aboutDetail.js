@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FocusAwareStatusBar from '../../header/statusBar';
 import admob, { BannerAdSize, BannerAd } from '@react-native-firebase/admob';
+import Banner from '../../admob/banner';
 
 const AboutDetail = ({ navigation, route }) => {
 
@@ -12,19 +13,11 @@ const AboutDetail = ({ navigation, route }) => {
     return (
         <SafeAreaView style={styles.container}>
             <FocusAwareStatusBar
-                backgroundColor={'white'} barStyle="dark-content" />
-            <BannerAd
-                unitId="ca-app-pub-8774393929760728/9421290027"
-                // unitId={'ca-app-pub-3940256099942544/6300978111'}
-                size={BannerAdSize.FULL_BANNER}
-                requestOptions={{
-                    requestNonPersonalizedAdsOnly: false,
-                }}
-            />
+                backgroundColor={'white'} barStyle="dark-content" />        
+            <Banner/>
             <View style={styles.innerContainer}>
                 <View style={styles.title}>
                     <View style={styles.logoContainer}>
-                        {/* <Image style={styles.logo} source={require('../../../../assets/icon.png')} /> */}
                         <Image style={styles.logo} source={require('../../../../assets/ic_launcher.png')} />
                     </View>
                     <View style={styles.titleContainer}>
@@ -56,8 +49,10 @@ const AboutDetail = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white', 
+        paddingBottom:50,
     },
+    
     innerContainer: {
         flex: 1,
     },

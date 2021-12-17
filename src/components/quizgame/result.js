@@ -3,8 +3,8 @@ import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-na
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import admob, { BannerAdSize, BannerAd } from '@react-native-firebase/admob';
-
+import Banner from '../admob/banner';
+import LinearGradient from 'react-native-linear-gradient';
 
 const QuizgameResult = ({ navigation, route }) => {
     // console.log(route)
@@ -34,24 +34,19 @@ const QuizgameResult = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <BannerAd
-                unitId="ca-app-pub-8774393929760728/9421290027"
-                // unitId={'ca-app-pub-3940256099942544/6300978111'}
-                size={BannerAdSize.FULL_BANNER}
-                requestOptions={{
-                    requestNonPersonalizedAdsOnly: false,
-                }}
-            />
+            <Banner />
             <View style={styles.content}>
                 <Icon name="star" style={styles.icon} size={60} />
                 <Text style={styles.textCongrat}>Chúc mừng bạn!</Text>
                 <Text style={styles.textScore}>{`Bạn đã trả lời đúng ${route.params.score + "/" + route.params.QuestionLength} Câu hỏi`}</Text>
                 <Text style={styles.textgrand}>{result()}</Text>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('QuizGame')}
-                style={styles.goBackHome}>
-                <Text style={styles.textGoBackHome}>Quay về</Text>
-            </TouchableOpacity>
+            <LinearGradient colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGroup}>
+                <TouchableOpacity onPress={() => navigation.navigate('QuizGame')}
+                    style={styles.goBackHome}>
+                    <Text style={styles.textGoBackHome}>Quay về</Text>
+                </TouchableOpacity>
+            </LinearGradient>
         </SafeAreaView>
     )
 }
@@ -75,17 +70,23 @@ const styles = StyleSheet.create({
         color: 'white', fontSize: 15, marginBottom: 20,
     },
     textgrand: { color: 'white', fontSize: 15, marginBottom: 20, },
-    goBackHome: {
-        width: "50%",
+    buttonGroup: {
         height: 50,
         borderRadius: 30,
-        backgroundColor: 'white',
+        width: '50%',
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    goBackHome: {
+        width: "100%",
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
     },
     textGoBackHome: {
         fontSize: 15,
+        color: "white"
     }
 })
 

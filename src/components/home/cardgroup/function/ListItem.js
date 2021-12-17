@@ -6,23 +6,21 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector, useDispatch } from 'react-redux';
 import { setListItemHeaderBarName, setItemDetailHeaderBar } from '../../../../redux/reducer';
-import { BannerAdSize, BannerAd } from '@react-native-firebase/admob';
+import Banner from '../../../admob/banner';
 
 const ListItems = ({ navigation, route }) => {
-    // console.log('listitem',route)
     const [state, setState] = useState({
         DATA: route.params.item.data,
         groupDataIndex: route.params.index,
-        // headerBarName: route.params.item.title,
     });
-    // console.log(state)
+
     const dispatch = useDispatch();
     const reducer = useSelector((store) => store.Reducer);
-    // console.log('listitem',reducer)
+
     let RemoveShortcutArr = reducer.data.map(d => d.data.filter(r => r.title !== "Shortcut")).flatMap(r => r);
 
     return (
-        <SafeAreaView style={styles.listItemContainer}>        
+        <SafeAreaView style={styles.listItemContainer}>
             <StatusBar backgroundColor={'white'} barStyle="dark-content" />
 
             <FlatList
@@ -70,14 +68,8 @@ const ListItems = ({ navigation, route }) => {
                     dispatch(setListItemHeaderBarName(RemoveShortcutArr[0].vi))
                 };
             }} />
-            <BannerAd
-                unitId="ca-app-pub-8774393929760728/9421290027"
-                // unitId={'ca-app-pub-3940256099942544/6300978111'}
-                size={BannerAdSize.FULL_BANNER}
-                requestOptions={{
-                    requestNonPersonalizedAdsOnly: false,
-                }}
-            />
+
+            <Banner />
         </SafeAreaView>
     )
 };

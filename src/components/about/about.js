@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AboutData from '../../asset/data/about_data';
 import FocusAwareStatusBar from '../header/statusBar';
-import { BannerAdSize, BannerAd } from '@react-native-firebase/admob';
+import Banner from '../admob/banner';
 
 const About = ({ navigation, route }) => {
 
@@ -14,14 +14,7 @@ const About = ({ navigation, route }) => {
     <SafeAreaView style={styles.container}>
       <FocusAwareStatusBar
         backgroundColor={'white'} barStyle="dark-content" />
-      <BannerAd
-        unitId="ca-app-pub-8774393929760728/9421290027"
-        // unitId={'ca-app-pub-3940256099942544/6300978111'}
-        size={BannerAdSize.FULL_BANNER}
-        requestOptions={{
-          requestNonPersonalizedAdsOnly: false,
-        }}
-      />
+      <Banner />
       <FlatList
         contentContainerStyle={styles.contentContainerStyle}
         keyExtractor={(item, index) => String(index)}
@@ -51,6 +44,7 @@ const About = ({ navigation, route }) => {
           )
         }}
       />
+
     </SafeAreaView>
   )
 };
@@ -60,7 +54,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainerStyle: { padding: 10 },
-  listContainer: { marginBottom: 10, height: 90, borderRadius: 5 },
+  listContainer: { marginBottom: 10, height: 60, borderRadius: 5 },
   iconGroup: { justifyContent: 'center', alignItems: 'center', width: 25, },
   icon: { color: '#14279B' },
   title: { fontSize: 14, fontWeight: 'bold' },
