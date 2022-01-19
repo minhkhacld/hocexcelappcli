@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
-import { closeSearchDropDown } from '../../redux/reducer';
-import Icon from "react-native-vector-icons/MaterialIcons";
-import { useSelector, useDispatch } from 'react-redux';
-import { setItemDetailHeaderBar } from '../../redux/reducer';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { useDispatch, useSelector } from 'react-redux';
+import { closeSearchDropDown, setItemDetailHeaderBar } from '../../redux/reducer';
 
 const FullScreenSearch = ({ navigation, SearchDATA }) => {
     const [searchValue, setSearchValue] = useState('');

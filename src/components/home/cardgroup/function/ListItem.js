@@ -1,19 +1,17 @@
-import React, { useState, } from 'react';
-import { StyleSheet, View, FlatList, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector, useDispatch } from 'react-redux';
-import { setListItemHeaderBarName, setItemDetailHeaderBar } from '../../../../redux/reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { setItemDetailHeaderBar, setListItemHeaderBarName } from '../../../../redux/reducer';
 import Banner from '../../../admob/banner';
+import { InterstitialAd } from '../../../admob/imperativeAd';
 
 const ListItems = ({ navigation, route }) => {
     const [state, setState] = useState({
         DATA: route.params.item.data,
         groupDataIndex: route.params.index,
     });
-
     const dispatch = useDispatch();
     const reducer = useSelector((store) => store.Reducer);
 
@@ -35,6 +33,7 @@ const ListItems = ({ navigation, route }) => {
                         <TouchableOpacity onPress={() => {
                             navigation.navigate('ListItemDetail', { item, listIndex, DATA: state.DATA });
                             dispatch(setItemDetailHeaderBar(item.title));
+
                         }
                         }>
                             <ListItem containerStyle={styles.listContainer} >
@@ -67,8 +66,8 @@ const ListItems = ({ navigation, route }) => {
                     });
                     dispatch(setListItemHeaderBarName(RemoveShortcutArr[0].vi))
                 };
+                InterstitialAd();
             }} />
-
             <Banner />
         </SafeAreaView>
     )
@@ -76,7 +75,7 @@ const ListItems = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     listItemContainer: {
-        flex: 1, paddingBottom: 40,
+        flex: 1, paddingBottom: 45,
         backgroundColor: "white",
         color: "black",
     },

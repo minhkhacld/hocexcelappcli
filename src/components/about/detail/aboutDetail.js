@@ -1,20 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, SafeAreaView, Image, FlatList } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FocusAwareStatusBar from '../../header/statusBar';
-import admob, { BannerAdSize, BannerAd } from '@react-native-firebase/admob';
 import Banner from '../../admob/banner';
 
 const AboutDetail = ({ navigation, route }) => {
-
     let data = route.params.item.data;
 
     return (
         <SafeAreaView style={styles.container}>
             <FocusAwareStatusBar
-                backgroundColor={'white'} barStyle="dark-content" />        
-            <Banner/>
+                backgroundColor={'white'} barStyle="dark-content" />
+
             <View style={styles.innerContainer}>
                 <View style={styles.title}>
                     <View style={styles.logoContainer}>
@@ -41,7 +37,7 @@ const AboutDetail = ({ navigation, route }) => {
                 </View>
             </View>
 
-
+            <Banner />
         </SafeAreaView>
     )
 }
@@ -49,10 +45,10 @@ const AboutDetail = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white', 
-        paddingBottom:50,
+        backgroundColor: 'white',
+        paddingBottom: 45,
     },
-    
+
     innerContainer: {
         flex: 1,
     },

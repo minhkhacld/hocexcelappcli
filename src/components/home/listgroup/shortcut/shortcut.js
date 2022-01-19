@@ -1,7 +1,5 @@
 import React, { useState, } from 'react';
-import { StyleSheet, View, Text, FlatList, TextInput,SafeAreaView, TouchableNativeFeedback, StatusBar } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, View, Text, FlatList, TextInput, SafeAreaView, TouchableNativeFeedback, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Banner from '../../../admob/banner';
@@ -9,7 +7,6 @@ import Banner from '../../../admob/banner';
 const ShortcutDetail = ({ navigation, route }) => {
     // console.log(route.params)
     const [searchValue, setSearchValue] = useState('');
-
 
     let ShortcutData = route.params.item.data[0].data;
     if (searchValue !== '') {
@@ -19,9 +16,9 @@ const ShortcutDetail = ({ navigation, route }) => {
         );
     }
     return (
-        <SafeAreaView style={{ flex: 1 }} >
+        <SafeAreaView style={{ flex: 1, paddingBottom: 45 }} >
             <StatusBar backgroundColor={'white'} barStyle="dark-content" />
-            <View style={{ top: StatusBar.currentHeight }}>
+            <View style={{ top: StatusBar.currentHeight, flex: 1, paddingBottom: 90 }}>
                 <TouchableNativeFeedback>
                     <View style={styles.shortcutSearch} >
                         <Icon name={'arrow-back-ios'} size={28} style={styles.goBackIcon} onPress={() => navigation.goBack()} />
@@ -32,7 +29,7 @@ const ShortcutDetail = ({ navigation, route }) => {
                     </View>
                 </TouchableNativeFeedback>
                 <View style={styles.container}>
-                    <Banner />
+
                     <FlatList
                         data={ShortcutData}
                         keyExtractor={(item, index) => String(index)}
@@ -55,8 +52,8 @@ const ShortcutDetail = ({ navigation, route }) => {
                         }}
                     />
                 </View>
-
             </View>
+            <Banner />
         </SafeAreaView>
     )
 }
@@ -124,6 +121,6 @@ const styles = StyleSheet.create({
         padding: 5,
         color: "black",
     },
-    
+
 })
 export default ShortcutDetail

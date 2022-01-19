@@ -1,23 +1,24 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { StyleSheet, View, Dimensions, FlatList, Text, SafeAreaView, StatusBar, RefreshControl } from 'react-native';
-import { ListItem, Image } from 'react-native-elements';
-import { NavigationContainer } from '@react-navigation/native';
-import { CreateNativeStackNavigator } from '@react-navigation/native-stack';
-import path from './global';
+import React, { useCallback, useRef, useState } from 'react';
+import { Dimensions, FlatList, RefreshControl, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Image, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
 import { setItemDetailHeaderBar } from '../../../../../redux/reducer';
 import Banner from '../../../../admob/banner';
-import {
-    AdEventType
-} from '@react-native-firebase/admob';
+import { InterstitialAd } from '../../../../admob/imperativeAd';
+import path from './global';
+// import {
+//     AdEventType
+// } from '@react-native-firebase/admob';
 
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const ListItemDetail = ({ navigation, route, interstitial }) => {
+const ListItemDetail = ({ navigation, route,
+    // interstitial 
+}) => {
 
 
     const [state, setState] = useState({
@@ -25,7 +26,7 @@ const ListItemDetail = ({ navigation, route, interstitial }) => {
         detailData: route.params.item.data,
         listIndex: route.params.listIndex
     });
-    const [loaded, setLoaded] = React.useState(false);
+    // const [loaded, setLoaded] = React.useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
 
@@ -36,48 +37,48 @@ const ListItemDetail = ({ navigation, route, interstitial }) => {
     let focusIndex = route.params.index;
 
 
-    React.useEffect(() => {
+    // React.useEffect(() => {
 
-        const eventListener = interstitial.onAdEvent(type => {
-            console.log('interstitialAd', type)
-            if (type === AdEventType.LOADED) {
-                setLoaded({ ...loaded, interstitial: true });
-            }
-            if (type === AdEventType.CLOSED) {
-                setLoaded({ ...loaded, interstitial: false });
-                //reload ad 
-                interstitial.load();
-            }
-        });
-        // Start loading the interstitial straight away
-        interstitial.load();
+    //     const eventListener = interstitial.onAdEvent(type => {
+    //         console.log('interstitialAd', type)
+    //         if (type === AdEventType.LOADED) {
+    //             setLoaded({ ...loaded, interstitial: true });
+    //         }
+    //         if (type === AdEventType.CLOSED) {
+    //             setLoaded({ ...loaded, interstitial: false });
+    //             //reload ad 
+    //             interstitial.load();
+    //         }
+    //     });
+    //     // Start loading the interstitial straight away
+    //     interstitial.load();
 
-        // Unsubscribe from events on unmount
-        return () => {
-            eventListener();
-        };
-    }, []);
+    //     // Unsubscribe from events on unmount
+    //     return () => {
+    //         eventListener();
+    //     };
+    // }, []);
 
     const onRefresh = useCallback(() => {
-        const eventListener = interstitial.onAdEvent(type => {
+        // const eventListener = interstitial.onAdEvent(type => {
 
-            if (type === AdEventType.LOADED) {
-                setLoaded({ ...loaded, interstitial: true });
-            }
-            if (type === AdEventType.CLOSED) {
-                setLoaded({ ...loaded, interstitial: false });
-                //reload ad 
-                interstitial.load();
-            }
-        });
-        // Start loading the interstitial straight away
-        interstitial.load();
+        //     if (type === AdEventType.LOADED) {
+        //         setLoaded({ ...loaded, interstitial: true });
+        //     }
+        //     if (type === AdEventType.CLOSED) {
+        //         setLoaded({ ...loaded, interstitial: false });
+        //         //reload ad 
+        //         interstitial.load();
+        //     }
+        // });
+        // // Start loading the interstitial straight away
+        // interstitial.load();
         setRefreshing(true);
         wait(500).then(() => setRefreshing(false));
         // Unsubscribe from events on unmount
-        return () => {
-            eventListener();
-        };
+        // return () => {
+        //     eventListener();
+        // };
     }, []);
 
 
@@ -133,7 +134,9 @@ const ListItemDetail = ({ navigation, route, interstitial }) => {
             />
             {DATA &&
                 <Icon name="chevron-double-right" size={35} style={styles.goforwardIcon} onPress={() => {
-                    interstitial.show()
+                    // if (loaded.interstitial) {
+                    //     interstitial.show()
+                    // }
                     if (state.listIndex < DATA.length - 1) {
                         setState({
                             ...state,
@@ -154,9 +157,9 @@ const ListItemDetail = ({ navigation, route, interstitial }) => {
                         dispatch(setItemDetailHeaderBar(DATA[0].title));
                         myList.current.scrollToIndex({ animated: true, index: 0, viewPosition: 0 });
                     }
+                    InterstitialAd();
                 }} />
             }
-
             <Banner />
 
         </SafeAreaView>
@@ -166,7 +169,7 @@ const ListItemDetail = ({ navigation, route, interstitial }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 50,
+        paddingBottom: 45,
     },
     pageHeader: {
         height: 50,

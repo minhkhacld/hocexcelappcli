@@ -1,10 +1,9 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, StatusBar } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Banner from '../admob/banner';
-import LinearGradient from 'react-native-linear-gradient';
+import { InterstitialAd } from '../admob/imperativeAd';
 
 const QuizgameResult = ({ navigation, route }) => {
     // console.log(route)
@@ -30,23 +29,31 @@ const QuizgameResult = ({ navigation, route }) => {
         else if (ratio === 1) {
             return 'Xếp loại Thiên tài';
         }
-    }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
-            <Banner />
-            <View style={styles.content}>
-                <Icon name="star" style={styles.icon} size={60} />
-                <Text style={styles.textCongrat}>Chúc mừng bạn!</Text>
-                <Text style={styles.textScore}>{`Bạn đã trả lời đúng ${route.params.score + "/" + route.params.QuestionLength} Câu hỏi`}</Text>
-                <Text style={styles.textgrand}>{result()}</Text>
+            <StatusBar
+                backgroundColor={"#1E3163"}
+                barStyle={'light-content'} />
+            <View style={styles.body}>
+                <View style={styles.content}>
+                    <Icon name="star" style={styles.icon} size={60} />
+                    <Text style={styles.textCongrat}>Chúc mừng bạn!</Text>
+                    <Text style={styles.textScore}>{`Bạn đã trả lời đúng ${route.params.score + "/" + route.params.QuestionLength} Câu hỏi`}</Text>
+                    <Text style={styles.textgrand}>{result()}</Text>
+                </View>
+                <LinearGradient colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGroup}>
+                    <TouchableOpacity onPress={() => {
+                        navigation.navigate('QuizGame');
+                        InterstitialAd();
+                    }}
+                        style={styles.goBackHome}>
+                        <Text style={styles.textGoBackHome}>Quay về</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
             </View>
-            <LinearGradient colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGroup}>
-                <TouchableOpacity onPress={() => navigation.navigate('QuizGame')}
-                    style={styles.goBackHome}>
-                    <Text style={styles.textGoBackHome}>Quay về</Text>
-                </TouchableOpacity>
-            </LinearGradient>
+            <Banner />
         </SafeAreaView>
     )
 }
@@ -54,6 +61,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#1E3163',
+        paddingBottom: 45,
+    },
+    body: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -73,7 +84,7 @@ const styles = StyleSheet.create({
     buttonGroup: {
         height: 50,
         borderRadius: 30,
-        width: '50%',
+        width: '95%',
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',

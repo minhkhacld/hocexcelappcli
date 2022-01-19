@@ -1,34 +1,25 @@
-import React, { useState, useEffect, useCallback, } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, SafeAreaView, RefreshControl, Alert, Dimensions, ScrollView, } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import QuizGameData from '../../asset/data/quizgame';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FocusAwareStatusBar from '../header/statusBar';
-import Sound from 'react-native-sound';
-import SusscessSound from '../../asset/audio/click_success.wav';
-import ErrorSound from '../../asset/audio/click_error.wav';
-import Banner from '../admob/banner';
-import {
-    AdEventType,
-    RewardedAdEventType
-} from '@react-native-firebase/admob';
-import LinearGradient from 'react-native-linear-gradient';
-import ModalClaimReward from './modalClaimReward';
 import moment from 'moment';
-
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, Dimensions, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, ToastAndroid } from 'react-native';
+import { AdMobRewarded } from 'react-native-admob';
+import LinearGradient from 'react-native-linear-gradient';
+import Sound from 'react-native-sound';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ErrorSound from '../../asset/audio/click_error.wav';
+import SusscessSound from '../../asset/audio/click_success.wav';
+import QuizGameData from '../../asset/data/quizgame';
+import Banner from '../admob/banner';
+import { InterstitialAd } from '../admob/imperativeAd';
+import FocusAwareStatusBar from '../header/statusBar';
+import ModalClaimReward from './modalClaimReward';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-
-const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
-    const [loaded, setLoaded] = React.useState({
-        interstitial: false,
-        rewarded: false,
-    });
+const QuizGame = ({ navigation,
+}) => {
     const [state, setState] = useState({
         DATA: QuizGameData
     });
@@ -45,7 +36,6 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
         time: null,
     });
     const [modalVisible, setModalVisible] = useState(false);
-
 
     useEffect(() => {
         const localStorageData = async () => {
@@ -65,7 +55,6 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
         localStorageData().then(async respone => {
             let checkValidTime
             if (respone.ignoreKey.time !== null) {
-
                 checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
             }
             // console.log('checkValidTime', checkValidTime);
@@ -76,54 +65,26 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
                 count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
                 time: checkValidTime > 0 ? null : respone.ignoreKey.time,
             });
+            // setIsOptionDisabled(false);
         });
-
-
-        const rewardEventListener = rewarded.onAdEvent((type, error, reward) => {
-            // console.log('rewardedAd', type, error, reward);
-            if (type === RewardedAdEventType.LOADED) {
-                setLoaded({ ...loaded, rewarded: true });
-            }
-            if (type === RewardedAdEventType.EARNED_REWARD) {
-                // console.log('User earned reward of ', reward);
-                if (reward !== {}) {
-                    setIgnoreWrongAsw({
-                        ...ignoreWrongAsw, count: 2
-                    })
-                    setModalVisible(false)
-                }
-            }
-            if (type === AdEventType.CLOSED) {
-                // console.log('close reward add');
-                setLoaded({ ...loaded, rewarded: false });
-                //reload ad 
-                rewarded.load();
+        const unseubcribe = () => AdMobRewarded.addEventListener('rewarded', reward => {
+            // console.log('AdMobRewarded => rewarded', reward)
+            if (reward) {
+                storeIgnoreAsw({
+                    lastUse: 2,
+                    time: moment().format("YYYY-MM-DD"),
+                });
+                setIgnoreWrongAsw({
+                    ...ignoreWrongAsw, count: 2,
+                })
+                setModalVisible(false);
+                // setIsOptionDisabled(false);
+            } else {
+                ToastAndroid.show("Phần thưởng không có sẵn hãy thử lại sau!");
             }
         });
-
-        const eventListener = interstitial.onAdEvent(type => {
-            // console.log('interstitialAd', type)
-            if (type === AdEventType.LOADED) {
-                setLoaded({ ...loaded, interstitial: true });
-            }
-            if (type === AdEventType.CLOSED) {
-                setLoaded({ ...loaded, interstitial: false });
-                //reload ad 
-                interstitial.load();
-            }
-        });
-        // Start loading the interstitial straight away
-        interstitial.load();
-        rewarded.load();
-        // Unsubscribe from events on unmount
-        return () => {
-            eventListener();
-            rewardEventListener();
-        };
+        return () => unseubcribe()
     }, []);
-
-    // Load the sound file 'whoosh.mp3' from the app bundle
-    // See notes below about preloading sounds within initialization code below.
 
     const onRefresh = useCallback(() => {
         setState({
@@ -132,7 +93,6 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
         setRefreshing(true);
         setCorrectOption(null);
         setIsOptionDisabled(false);
-        setShowNextButton(false);
         setCurrentOptionSelected(null);
         wait(500).then(() => setRefreshing(false));
     }, []);
@@ -150,15 +110,13 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
                         setCurrentOptionSelected(null);
                         setCorrectOption(null);
                         setIsOptionDisabled(false);
-                        setShowNextButton(false);
                         setIgnoreWrongAsw({
                             count: 5, time: null,
                         });
                         AsyncStorage.clear();
-                        interstitial.show();
+                        InterstitialAd();
 
                     },
-
                 },
                 { text: "Không", onPress: () => console.log("Cancle Pressed"), style: "cancel" }
             ]
@@ -200,6 +158,11 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
     const storeData = async (qsIndex, score) => {
         try {
             const jsonValue = JSON.stringify({ qsIndex: qsIndex, score: score });
+            let keyIgnoreObj = {
+                lastUse: 0,
+                time: moment().format("YYYY-MM-DD"),
+            };
+            storeIgnoreAsw(keyIgnoreObj);
             await AsyncStorage.setItem('currentQuestionIndex', jsonValue);
             setStoreMessage('Đã Lưu');
             return
@@ -230,27 +193,19 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
         }
         else {
             setIgnoreWrongAsw({
-                ...ignoreWrongAsw, count: ignoreWrongAsw.count > 1 ? ignoreWrongAsw.count - 1 : 0
+                ...ignoreWrongAsw, count: ignoreWrongAsw.count > 0 ? ignoreWrongAsw.count - 1 : 0
             })
             errorClick.play();
         }
     };
 
     const handleNext = () => {
-        if (ignoreWrongAsw.time === null) {
-            let flag = [19, 39, 59].filter(num => num == currentQuestionIndex)
-            if (flag.length > 0 && loaded.interstitial) {
-                interstitial.show();
-            }
-            if (ignoreWrongAsw.count === 0) {
-                let keyIgnoreObj = {
-                    lastUse: 0,
-                    time: moment().format("YYYY-MM-DD"),
-                };
-                setModalVisible(true);
-                setShowNextButton(false);
-                storeIgnoreAsw(keyIgnoreObj);
-                storeData(currentQuestionIndex, score);
+        // No advert ready to show yet
+        if (ignoreWrongAsw.count > 0) {
+            let flag = [6, 14, 21, 28, 35, 42, 49, 56].filter(num => num == currentQuestionIndex)
+            if (flag.length > 0) {
+                // interstitial.show()
+                InterstitialAd();
             }
             if (currentQuestionIndex == state.DATA.length - 1) {
                 //show modal           
@@ -260,11 +215,19 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
                 setCurrentOptionSelected(null);
                 setCorrectOption(null);
                 setIsOptionDisabled(false);
-                setShowNextButton(false);
                 setStoreMessage("Lưu");
             };
-
-        } else {
+        }
+        else if (ignoreWrongAsw.count === 0) {
+            let keyIgnoreObj = {
+                lastUse: 0,
+                time: moment().format("YYYY-MM-DD"),
+            };
+            setModalVisible(true);
+            storeIgnoreAsw(keyIgnoreObj);
+            storeData(currentQuestionIndex, score);
+        }
+        else if (ignoreWrongAsw.time !== null && ignoreWrongAsw.count === 0) {
             setModalVisible(true);
         }
     };
@@ -281,7 +244,7 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
     //     "ignoreWrongAsw", ignoreWrongAsw,
     //     "modalVisible", modalVisible,
     // );
-
+    console.log('intertial', ignoreWrongAsw)
     return (
         <SafeAreaView style={styles.container}>
             <FocusAwareStatusBar
@@ -391,7 +354,7 @@ const QuizGame = ({ navigation, route, interstitial, rewarded }) => {
             </ScrollView>
 
             {modalVisible && <ModalClaimReward modalVisible={modalVisible} setModalVisible={setModalVisible}
-                ignoreWrongAsw={ignoreWrongAsw} setIgnoreWrongAsw={setIgnoreWrongAsw} rewarded={rewarded}
+                ignoreWrongAsw={ignoreWrongAsw} setIgnoreWrongAsw={setIgnoreWrongAsw}
             />
             }
         </SafeAreaView>

@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch } from 'react-redux';
 import { setListItemHeaderBarName } from '../../../redux/reducer';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 const Listgroup = ({ navigation, ListGroupDATA }) => {

@@ -1,6 +1,14 @@
 const AboutData = [
+    // {
+    //     title: "Nhắc nhở tôi học Excel",
+    //     icon: "reminder",
+    //     description_en: "",
+    //     description_vi: "Đặt lịch nhắc nhở bạn học excel hằng ngày",
+    //     data: [
+    //     ]
+    // },
     {
-        title: "Giới thiệu về Ứng dụng Hoc Excel",
+        title: "Giới thiệu",
         icon: "information",
         description_en: "",
         description_vi: "Lời Cảm Ơn",
@@ -46,68 +54,11 @@ const AboutData = [
         ]
     },
     {
-        title: "Thông tin phần mềm",
-        icon: "copyright",
-        description_en: "",
-        description_vi: "Thông tin phần mềm",
-        data: [
-            {
-                title: "",
-                description_vi: "Tên ứng dụng: Hoc Excel",
-                note: "",
-                explanation: "",
-            },
-            {
-                title: "",
-                description_vi: "Tên gọi khác: (E2SOFT)",
-                note: "",
-                explanation: "",
-            },
-            {
-                title: "",
-                description_vi: "Phiên bản: 1.3.0",
-                note: "",
-                explanation: "",
-            },
-            {
-                title: "",
-                description_vi: "Ngày xuất bản: 13/15/2021",
-                note: "",
-                explanation: "",
-            },
-            {
-                title: "",
-                description_vi: "Chủ sở hữu: Pham Minh Kha",
-                note: "",
-                explanation: "",
-            },
-        ]
-    },
-    {
         title: "Liên hệ và hỗ trợ",
         icon: "contacts",
         description_en: "",
         description_vi: "Liên hệ và hỗ trợ",
         data: [
-            {
-                title: "",
-                description_vi: "Mọi thắc mắc và đóng góp ý kiến xin vui lòng liên hệ:",
-                note: "",
-                explanation: "",
-            },
-            {
-                title: "",
-                description_vi: "Email: pmkha92@gmail.com",
-                note: "",
-                explanation: "",
-            },
-            {
-                title: "",
-                description_vi: "Điện thoại: +84355210716",
-                note: "",
-                explanation: "",
-            },
-
         ]
     },
     {
@@ -115,6 +66,22 @@ const AboutData = [
         icon: "shield-account",
         description_en: "",
         description_vi: "Liên hệ và hỗ trợ",
+        data: [
+        ]
+    },
+    {
+        title: "Chia sẻ ứng dụng",
+        icon: "share-variant",
+        description_en: "",
+        description_vi: "Chia sẻ ứng dụng cho bạn bè và người thân để cùng nhau tiến bộ",
+        data: [
+        ]
+    },
+    {
+        title: "Đánh giá ứng dụng",
+        icon: "star",
+        description_en: "",
+        description_vi: "Tham gia đánh giá và đóng góp để cải thiện ứng dụng ngày càng hiệu quả hơn",
         data: [
         ]
     },

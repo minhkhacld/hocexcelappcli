@@ -1,10 +1,8 @@
-apply plugin: "com.android.application"
+apply plugin: 'com.android.application'
 // admob
 apply plugin: 'com.google.gms.google-services'
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply from: '../../node_modules/react-native-vector-icons/fonts.gradle'
 import com.android.build.OutputFile
-
-
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -85,7 +83,7 @@ project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
 ]
 
-apply from: "../../node_modules/react-native/react.gradle"
+apply from: '../../node_modules/react-native/react.gradle'
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -122,37 +120,37 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
-def enableHermes = project.ext.react.get("enableHermes", false);
+def enableHermes = project.ext.react.get('enableHermes', false)
 
 /**
  * Architectures to build native code for in debug.
  */
-def nativeArchitectures = project.getProperties().get("reactNativeDebugArchitectures")
+def nativeArchitectures = project.getProperties().get('reactNativeDebugArchitectures')
 
 android {
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-   
+
     defaultConfig {
-        applicationId "com.hocexcel"
+        applicationId 'com.hocexcel'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.5"
+        versionCode 6
+        versionName '1.6'
 
-        //admob
-        //  multiDexEnabled true
-        //  aaptOptions{
-        //      noCompress "tflite","model"
-        //  }
+    //admob
+     multiDexEnabled true
+    //  aaptOptions{
+    //      noCompress "tflite","model"
+    //  }
     }
     splits {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+            include 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
         }
     }
     signingConfigs {
@@ -162,7 +160,7 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-         release {
+        release {
             if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
                 storeFile file(MYAPP_UPLOAD_STORE_FILE)
                 storePassword MYAPP_UPLOAD_STORE_PASSWORD
@@ -188,7 +186,7 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
             minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -198,50 +196,49 @@ android {
             // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
             // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            def versionCodes = ['armeabi-v7a': 1, 'x86': 2, 'arm64-v8a': 3, 'x86_64': 4]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
-
         }
     }
 }
 
 dependencies {
     // compile project(':RNAdMob')
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.facebook.react:react-native:+'  // From node_modules
 
     //firebase
      // Import the Firebase BoM
     //  implementation platform('com.google.firebase:firebase-bom:29.0.2')
 
-
   // Add the dependency for the Firebase SDK for Google Analytics
   // When using the BoM, don't specify versions in Firebase dependencies
     //  implementation 'com.google.firebase:firebase-analytics'
-
 
   // Add the dependencies for any other desired Firebase products
   // https://firebase.google.com/docs/android/setup#available-libraries
 
     //addmob
     implementation 'com.google.android.gms:play-services-ads:19.8.0'
-        // implementation 'com.google.android.gms:play-services-ads:18.1.0'
+    // implementation 'com.google.android.gms:play-services-ads:18.1.0'
     //  implementation 'com.google.android.gms:play-services-ads:20.5.0'
-//      implementation( project(':react-native-admob') ){
-//     exclude group: "com.google.android.gms"
-//   }
+    //      implementation( project(':react-native-admob') ){
+    //     exclude group: "com.google.android.gms"
+    //   }
     // implementation "com.google.android.gms:play-services-ads:17.2.1"
     // implementation "com.google.firebase:firebase-ads:17.2.1"
     implementation 'com.android.support:multidex:1.0.3'
+    //firebase
+    implementation project(':react-native-push-notification')
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation platform('com.google.firebase:firebase-bom:29.0.3')
 
-
-
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
@@ -257,9 +254,9 @@ dependencies {
     }
 
     if (enableHermes) {
-        def hermesPath = "../../node_modules/hermes-engine/android/";
-        debugImplementation files(hermesPath + "hermes-debug.aar")
-        releaseImplementation files(hermesPath + "hermes-release.aar")
+        def hermesPath = '../../node_modules/hermes-engine/android/'
+        debugImplementation files(hermesPath + 'hermes-debug.aar')
+        releaseImplementation files(hermesPath + 'hermes-release.aar')
     } else {
         implementation jscFlavor
     }
@@ -272,4 +269,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: file('../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle'); applyNativeModulesAppBuildGradle(project)

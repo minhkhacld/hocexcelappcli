@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 //addmob
-// import com.sbugert.rnadmob.RNAdMobPackage;
+import com.sbugert.rnadmob.RNAdMobPackage;
 //
 
 public class MainApplication extends Application implements ReactApplication {

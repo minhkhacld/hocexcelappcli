@@ -1,20 +1,55 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, TouchableOpacity, SafeAreaView, Linking } from 'react-native';
+import { StyleSheet, View, FlatList, TouchableOpacity, SafeAreaView, Linking, ToastAndroid } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AboutData from '../../asset/data/about_data';
 import FocusAwareStatusBar from '../header/statusBar';
 import Banner from '../admob/banner';
+import Share from 'react-native-share';
+import { InterstitialAd } from '../admob/imperativeAd';
+// import { SchemaNotifications } from '../notyfication/config';
 
 const About = ({ navigation, route }) => {
+
+  const _onHandleNavigate = (item) => {
+    if (item.title === "Điều khoản và chính sách") {
+      Linking.openURL('https://minhkhacld.github.io/hocexcelpolicy');
+    } else if (item.title === "Chia sẻ ứng dụng") {
+      let options = {
+        title: 'Chia sẽ ứng dụng',
+        message: 'Hoc excel',
+        url: 'https://play.google.com/store/apps/details?id=com.hocexcel'
+      }
+      Share.open(options)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          err && console.log(err);
+        });
+
+    } else if (item.title === "Đánh giá ứng dụng") {
+      Linking.openURL('https://play.google.com/store/apps/details?id=com.hocexcel');
+
+    } else if (item.title === "Liên hệ và hỗ trợ") {
+      navigation.navigate('ContactAndSupport');
+      InterstitialAd();
+    }
+    // else if (item.title === "Nhắc nhở tôi học Excel") {
+    //   SchemaNotifications();
+    //   ToastAndroid.show("Đã thiết lập thông báo nhắc nhở hằng ngày",ToastAndroid.LONG)
+    // }
+    else {
+      navigation.navigate('AboutDetail', { item });
+      InterstitialAd();
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <FocusAwareStatusBar
         backgroundColor={'white'} barStyle="dark-content" />
-      <Banner />
+
       <FlatList
         contentContainerStyle={styles.contentContainerStyle}
         keyExtractor={(item, index) => String(index)}
@@ -23,13 +58,7 @@ const About = ({ navigation, route }) => {
         data={AboutData}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity onPress={() => {
-              if (item.title === "Điều khoản và chính sách") {
-                Linking.openURL('https://minhkhacld.github.io/hocexcelpolicy')
-              } else {
-                navigation.navigate('AboutDetail', { item })
-              }
-            }
+            <TouchableOpacity onPress={() => _onHandleNavigate(item)
             }>
               <ListItem containerStyle={styles.listContainer} >
                 <View style={styles.iconGroup}>
@@ -44,14 +73,14 @@ const About = ({ navigation, route }) => {
           )
         }}
       />
-
+      <Banner />
     </SafeAreaView>
   )
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1, paddingBottom: 45,
   },
   contentContainerStyle: { padding: 10 },
   listContainer: { marginBottom: 10, height: 60, borderRadius: 5 },

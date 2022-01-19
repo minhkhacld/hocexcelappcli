@@ -15,11 +15,10 @@ import ShortcutDetail from './src/components/home/listgroup/shortcut/shortcut';
 import About from './src/components/about/about';
 import AboutDetail from './src/components/about/detail/aboutDetail';
 import QuizGame from './src/components/quizgame/quizgame';
-import QuizgameResult from './src/components/quizgame/result'
+import QuizgameResult from './src/components/quizgame/result';
+import ContactAndSupport from './src/components/about/contactAndSupport/contactAndSupport';
 //Icon
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import admob, { MaxAdContentRating, InterstitialAd, RewardedAd } from '@react-native-firebase/admob';
-import { interstitialAdId, rewardAdId } from './src/components/admob/adMobId';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -27,30 +26,7 @@ const QuizGameStack = createNativeStackNavigator();
 const AboutStack = createNativeStackNavigator();
 
 
-const interstitial = InterstitialAd.createForAdRequest(interstitialAdId, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ['fashion', 'clothing'],
-});
-const rewarded = RewardedAd.createForAdRequest(rewardAdId, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ['fashion', 'clothing', 'technology'],
-});
-
 const App = () => {
-
-  admob()
-    .setRequestConfiguration({
-      // Update all future requests suitable for parental guidance
-      maxAdContentRating: MaxAdContentRating.PG,
-      // Indicates that you want your content treated as child-directed for purposes of COPPA.
-      tagForChildDirectedTreatment: true,
-      // Indicates that you want the ad request to be handled in a
-      // manner suitable for users under the age of consent.
-      tagForUnderAgeOfConsent: true,
-    })
-    .then(() => {
-      // Request config successfully set!
-    });
 
   const HomeStackScreen = () => {
     const reducer = useSelector((store) => store.Reducer);
@@ -61,12 +37,9 @@ const App = () => {
         }} />
         <HomeStack.Screen name="ListItem" component={ListItems} options={({ route }) => ({ title: reducer.listItemHeaderBarName })} />
         <HomeStack.Screen name="ListItemDetail"
-          //  component={ListItemDetail}
           options={{
             title: reducer.itemDetailHeaderBar,
-          }} >
-          {(props) => <ListItemDetail {...props} interstitial={interstitial} />}
-        </HomeStack.Screen>
+          }} component={ListItemDetail} />
         <HomeStack.Screen name="ShortcutDetail" component={ShortcutDetail} options={{ title: "Phím tắt và công dụng", headerShown: false, }} />
       </HomeStack.Navigator>
     )
@@ -76,12 +49,9 @@ const App = () => {
     return (
       <QuizGameStack.Navigator initialRouteName="QuizGame" >
         <QuizGameStack.Screen name="QuizGame"
-          // component={QuizGame} 
           options={{
             headerShown: false,
-          }} >
-          {(props) => <QuizGame {...props} interstitial={interstitial} rewarded={rewarded} />}
-        </QuizGameStack.Screen>
+          }} component={QuizGame} />
         <QuizGameStack.Screen name="QuizGameResult" component={QuizgameResult} options={{
           title: "Kết quả", headerStyle: {
             backgroundColor: '#1E3163'
@@ -90,7 +60,7 @@ const App = () => {
             fontWeight: 'bold',
           }, headerShadowVisible: false,
         }} />
-      </QuizGameStack.Navigator>
+      </QuizGameStack.Navigator >
     )
   };
 
@@ -102,6 +72,7 @@ const App = () => {
           title: "Giới thiệu",
         }} />
         <AboutStack.Screen name="AboutDetail" component={AboutDetail} options={({ route }) => ({ title: route.params.item.title })} />
+        <AboutStack.Screen name="ContactAndSupport" component={ContactAndSupport} options={({ route }) => ({ title: "Liên hệ và hỗ trợ" })} />
       </AboutStack.Navigator>
     )
   };
