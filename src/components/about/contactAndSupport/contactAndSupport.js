@@ -2,8 +2,34 @@ import React from 'react';
 import { Image, Linking, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Banner from '../../admob/banner';
+import axios from 'axios';
+import { API_SHEET_URL, API_MY_PROJECT } from '@env';
 
 const ContactAndSupport = () => {
+    const [projectData, setProjectData] = React.useState([]);
+
+    React.useEffect(() => {
+        const data = {
+            sheetName: "MyProject",
+            sheetUrl: `${API_SHEET_URL}`
+        }
+        axios.post(`${API_MY_PROJECT}`, { data: data })
+            .then(response => {
+                // console.log('respone api', response.data.headers);
+                if (response.data.data.length > 0) {
+                    let obj = {};
+                    let arr = []
+                    response.data.data.forEach((row, index) => {
+                        let headersArr = response.data.headers;
+                        obj = row.reduce((a, v, currentIndex) => ({ ...a, [headersArr[currentIndex]]: v }), {});
+                        arr.push(obj);
+                    })
+                    setProjectData(arr);
+                }
+            }).catch(err => {
+                alert(err);
+            });
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -20,8 +46,8 @@ const ContactAndSupport = () => {
                         <Text style={styles.body.content.group.bighead}>Chi tiết ứng dụng</Text>
                         <View style={{ flexGrow: 1, }}>
                             <Text style={styles.body.content.group.text}>Tên ứng dụng: Hoc Excel</Text>
-                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.1.6</Text>
-                            <Text style={styles.body.content.group.text}>Ngày phát hành: January 19, 2022</Text>
+                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.1.7</Text>
+                            <Text style={styles.body.content.group.text}>Ngày phát hành: March 4, 2022</Text>
                             <Text style={styles.body.content.group.text}>Chủ sở hữu: Pham Minh Kha</Text>
                         </View>
                     </View>
@@ -53,24 +79,37 @@ const ContactAndSupport = () => {
                                 <Icon name={'coffee'} color={'#009DAE'} size={20} />
                                 <Text style={{ color: '#009DAE', paddingLeft: 8 }}>Buy me a coffee at: https://www.buymeacoffee.com/pmkha</Text>
                             </TouchableOpacity>
-                            <View style={{ marginTop: 10, width: '100%', height: 'auto' }}>
-                                <Text style={{ color: 'black', marginBottom: 8 }}>Ứng dụng khác của tôi:</Text>
-                                <TouchableOpacity onPress={() => Linking.openURL(`https://play.google.com/store/apps/details?id=com.scantogooglesheets`)}
-                                    style={{
-                                        flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'
-                                        , marginBottom: 10
-                                    }}
-                                >
-                                    <Image
-                                        style={{
-                                            width: 40,
-                                            height: 40,
-                                            borderRadius: 5,
-                                        }}
-                                        source={require('../../../asset/picture/play_store_512.png')}
-                                    />
-                                </TouchableOpacity>
-                            </View>
+
+                            {projectData.length > 0 &&
+                                <View style={{ marginTop: 10, width: '100%', height: 'auto' }}>
+                                    <Text style={{ color: 'black', marginBottom: 8, fontSize: 15, fontWeight: 'bold' }}>Ứng dụng khác của tôi:</Text>
+                                    {
+                                        projectData.map((item, index) => {
+                                            return (
+                                                <TouchableOpacity key={index} onPress={() => Linking.openURL(`${item.Link}`)}
+                                                    style={{
+                                                        flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
+                                                        , marginBottom: 10, width: '100%', height: 50,
+                                                    }}
+                                                >
+                                                    <Text style={{ width: '70%', color: 'black' }}>{item.Descripton}</Text>
+                                                    <View style={{ width: '30%', justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Image
+                                                            style={{
+                                                                width: 40,
+                                                                height: 40,
+                                                                borderRadius: 5,
+                                                            }}
+                                                            source={{ uri: item.Picture }}
+                                                        />
+                                                    </View>
+                                                </TouchableOpacity>
+                                            )
+                                        })
+                                    }
+                                </View>
+                            }
+
                         </View>
                     </View>
                 </View>

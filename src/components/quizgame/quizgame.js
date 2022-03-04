@@ -6,13 +6,12 @@ import { AdMobRewarded } from 'react-native-admob';
 import LinearGradient from 'react-native-linear-gradient';
 import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ErrorSound from '../../asset/audio/click_error.wav';
-import SusscessSound from '../../asset/audio/click_success.wav';
 import QuizGameData from '../../asset/data/quizgame';
 import Banner from '../admob/banner';
 import { InterstitialAd } from '../admob/imperativeAd';
 import FocusAwareStatusBar from '../header/statusBar';
 import ModalClaimReward from './modalClaimReward';
+
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -37,53 +36,63 @@ const QuizGame = ({ navigation,
     });
     const [modalVisible, setModalVisible] = useState(false);
 
-    useEffect(() => {
-        const localStorageData = async () => {
-            try {
-                let result = await AsyncStorage.getItem('currentQuestionIndex');
-                let ignoreKey = await AsyncStorage.getItem('ignoreKey');
-                // console.log(result, ignoreKey);
-                return {
-                    questionInfo: result !== null ? JSON.parse(result) : { qsIndex: 0, score: score ? score : 0 },
-                    ignoreKey: ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null }
-                }
-            } catch (error) {
-                console.error(error);
-            };
+
+    const localStorageData = async () => {
+        try {
+            let result = await AsyncStorage.getItem('currentQuestionIndex');
+            let ignoreKey = await AsyncStorage.getItem('ignoreKey');
+            // console.log(result, ignoreKey);
+            return {
+                questionInfo: result !== null ? JSON.parse(result) : { qsIndex: 0, score: score ? score : 0 },
+                ignoreKey: ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null }
+            }
+        } catch (error) {
+            console.error(error);
         };
+    };
+
+    useEffect(() => {
+        let abortController = new AbortController();
+        let aborted = abortController.signal.aborted;
 
         localStorageData().then(async respone => {
             let checkValidTime
             if (respone.ignoreKey.time !== null) {
-                checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
+                // checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
+                checkValidTime = moment().diff(moment(respone.ignoreKey.time), 'days');
             }
             // console.log('checkValidTime', checkValidTime);
             // console.log('loadlocastorage', respone)
-            setCurrentQuestionIndex(respone.questionInfo.qsIndex);
-            setScore(respone.questionInfo.score)
-            setIgnoreWrongAsw({
-                count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
-                time: checkValidTime > 0 ? null : respone.ignoreKey.time,
-            });
-            // setIsOptionDisabled(false);
+            if (aborted === false) {
+                setCurrentQuestionIndex(respone.questionInfo.qsIndex);
+                setScore(respone.questionInfo.score)
+                setIgnoreWrongAsw({
+                    count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
+                    time: checkValidTime > 0 ? null : respone.ignoreKey.time,
+                });
+            }
         });
         const unseubcribe = () => AdMobRewarded.addEventListener('rewarded', reward => {
             // console.log('AdMobRewarded => rewarded', reward)
             if (reward) {
-                storeIgnoreAsw({
-                    lastUse: 2,
-                    time: moment().format("YYYY-MM-DD"),
-                });
-                setIgnoreWrongAsw({
-                    ...ignoreWrongAsw, count: 2,
-                })
-                setModalVisible(false);
-                // setIsOptionDisabled(false);
+                if (aborted === false) {
+                    storeIgnoreAsw({
+                        lastUse: 2,
+                        time: moment().format("YYYY-MM-DD"),
+                    });
+                    setIgnoreWrongAsw({
+                        ...ignoreWrongAsw, count: 2,
+                    })
+                    setModalVisible(false);
+                }
             } else {
                 ToastAndroid.show("Phần thưởng không có sẵn hãy thử lại sau!");
             }
         });
-        return () => unseubcribe()
+        return () => {
+            unseubcribe();
+            abortController.abort();
+        }
     }, []);
 
     const onRefresh = useCallback(() => {
@@ -124,36 +133,6 @@ const QuizGame = ({ navigation,
     };
 
     Sound.setCategory('Playback');
-    const successClick = new Sound(SusscessSound, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-            // console.log('failed to load the sound', error);
-            return;
-        }
-        // loaded successfully
-        // Play the sound with an onEnd callback
-        successClick.play((success) => {
-            if (success) {
-                // console.log('successfully finished playing');
-            } else {
-                // console.log('playback failed due to audio decoding errors');
-            }
-        });
-    });
-    const errorClick = new Sound(ErrorSound, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-            // console.log('failed to load the sound', error);
-            return;
-        }
-        // loaded successfully
-        // Play the sound with an onEnd callback
-        errorClick.play((success) => {
-            if (success) {
-                // console.log('successfully finished playing');
-            } else {
-                // console.log('playback failed due to audio decoding errors');
-            }
-        });
-    });
 
     const storeData = async (qsIndex, score) => {
         try {
@@ -189,24 +168,35 @@ const QuizGame = ({ navigation,
         setShowNextButton(true);
         if (selectedOption === correct_option) {
             setScore(score + 1);
-            successClick.play();
+            // successClick.play();
+            const successClick = new Sound('click_success.wav', Sound.MAIN_BUNDLE, (error) => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                }
+                else {
+                    successClick.play(); // have to put the call to play() in the onload callback
+                };
+            });
         }
         else {
             setIgnoreWrongAsw({
                 ...ignoreWrongAsw, count: ignoreWrongAsw.count > 0 ? ignoreWrongAsw.count - 1 : 0
             })
-            errorClick.play();
+            // errorClick.play();
+            const errorClick = new Sound('click_error.wav', Sound.MAIN_BUNDLE, (error) => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                }
+                else {
+                    errorClick.play(); // have to put the call to play() in the onload callback
+                };
+            });
         }
     };
 
     const handleNext = () => {
         // No advert ready to show yet
         if (ignoreWrongAsw.count > 0) {
-            let flag = [6, 14, 21, 28, 35, 42, 49, 56].filter(num => num == currentQuestionIndex)
-            if (flag.length > 0) {
-                // interstitial.show()
-                InterstitialAd();
-            }
             if (currentQuestionIndex == state.DATA.length - 1) {
                 //show modal           
                 navigation.navigate('QuizGameResult', { score, QuestionLength: state.DATA.length });
@@ -244,7 +234,8 @@ const QuizGame = ({ navigation,
     //     "ignoreWrongAsw", ignoreWrongAsw,
     //     "modalVisible", modalVisible,
     // );
-    console.log('intertial', ignoreWrongAsw)
+    console.log('intertial', ignoreWrongAsw);
+
     return (
         <SafeAreaView style={styles.container}>
             <FocusAwareStatusBar

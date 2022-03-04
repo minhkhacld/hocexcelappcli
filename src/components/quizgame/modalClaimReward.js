@@ -10,7 +10,6 @@ const ModalClaimReward = ({
     ignoreWrongAsw,
 }) => {
 
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar
@@ -52,9 +51,7 @@ Tip: Hãy bình tĩnh suy nghĩ thật kỹ chọn phương án đúng. Nếu b�
                             </TouchableOpacity >
                         </LinearGradient>
                         <LinearGradient colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.scanButtonGroup}>
-                            <TouchableOpacity style={styles.modalActionButton} onPress={() => {
-                                RewardedAd()
-                            }
+                            <TouchableOpacity style={styles.modalActionButton} onPress={() => RewardedAd()
                             }>
                                 <Text style={{ color: "white", fontSize: 15, fontWeight: "bold", marginRight: 5 }}>{ignoreWrongAsw.count === 0 ? "Lấy chìa" : "+" + ignoreWrongAsw.count}</Text>
                                 <Icon name={"key"} size={30} color={"yellow"} />

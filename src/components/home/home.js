@@ -10,16 +10,25 @@ import CardGroup from './cardgroup/cardgroup';
 import ListGroup from './listgroup/listgroup';
 import { InterstitialAd } from '../admob/imperativeAd';
 import RemotePushController from '../notyfication/remotePushController';
+import DoubleTapToClose from '../exitApp/exitApp';
+import KeepAwake from 'react-native-keep-awake';
 
 const Home = ({ navigation, route }) => {
-
     const dispatch = useDispatch();
     const reducer = useSelector((store) => {
         return store.Reducer
     });
     useEffect(() => {
-        dispatch(setData(FlatListData));
-        InterstitialAd();
+        let abortController = new AbortController();
+        let aborted = abortController.signal.aborted;
+        if (aborted === false) {
+            dispatch(setData(FlatListData));
+        }
+        // InterstitialAd();
+        return () => {
+            abortController.abort();
+        };
+
     }, []);
 
     const windowHeight = Dimensions.get('window').height;
@@ -37,6 +46,8 @@ const Home = ({ navigation, route }) => {
                     <FullScreenSearch SearchDATA={SearchDATA} navigation={navigation} />
                 }
             </KeyboardAvoidingView>
+            <DoubleTapToClose />
+            <KeepAwake />
             <View>
                 <RemotePushController />
             </View>

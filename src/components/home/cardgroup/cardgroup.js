@@ -5,8 +5,6 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch } from 'react-redux';
 import { setListItemHeaderBarName } from '../../../redux/reducer';
 
-
-
 const CardGroup = ({ navigation, CardGroupDATA }) => {
     const dispatch = useDispatch();
     return (
@@ -29,7 +27,7 @@ const CardGroup = ({ navigation, CardGroupDATA }) => {
                                 >
                                     <TouchableOpacity style={styles.touchableOpacity} onPress={() => {
                                         navigation.navigate('ListItem', { item, index });
-                                        dispatch(setListItemHeaderBarName(item.vi));                                    
+                                        dispatch(setListItemHeaderBarName(item.vi));
                                     }}>
                                         <View style={styles.iconGroup}>
                                             <View style={styles.iconBorder}>

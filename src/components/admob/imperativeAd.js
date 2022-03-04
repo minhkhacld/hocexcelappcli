@@ -13,9 +13,8 @@ export const InterstitialAd = () => {
 export const RewardedAd = () => {
     // Display an interstitial
     AdMobRewarded.setAdUnitID(rewardAdId);
-    AdMobRewarded.requestAd().then((res) => {
-        AdMobRewarded.showAd();
-    }
+    AdMobRewarded.requestAd().then(() =>
+        AdMobRewarded.showAd()
     );
 }
 

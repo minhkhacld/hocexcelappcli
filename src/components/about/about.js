@@ -33,15 +33,9 @@ const About = ({ navigation, route }) => {
 
     } else if (item.title === "Liên hệ và hỗ trợ") {
       navigation.navigate('ContactAndSupport');
-      InterstitialAd();
     }
-    // else if (item.title === "Nhắc nhở tôi học Excel") {
-    //   SchemaNotifications();
-    //   ToastAndroid.show("Đã thiết lập thông báo nhắc nhở hằng ngày",ToastAndroid.LONG)
-    // }
     else {
       navigation.navigate('AboutDetail', { item });
-      InterstitialAd();
     }
   }
 
