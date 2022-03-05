@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import { Linking } from 'react-native';
 import PushNotification, { Importance } from 'react-native-push-notification';
 
 const RemotePushController = () => {
@@ -12,7 +13,7 @@ const RemotePushController = () => {
             onNotification: function (notification) {
                 console.log('REMOTE NOTIFICATION ==>', notification);
                 // process the notification here     
-                if (notification.title) {
+                if (notification.title !== "") {
                     PushNotification.localNotification({
                         channelId: `${notification.channelId}`,
                         autoCancel: true,
@@ -25,19 +26,21 @@ const RemotePushController = () => {
                         vibration: `${notification.vibration}`,
                         playSound: `${notification.playSound}`,
                         soundName: 'default',
-                        actions: '["Yes", "No"]',
-                        // actions: '["Go to Premium version", "Go to current version"]',
+                        actions: '["Xem thử", "Để sau"]',
+                        // actions: `'["${notification.data.btnLeft}", "${notification.data.btnRight}"]'`,
                         invokeApp: false,
                         largeIcon: "ic_launcher",
                         smallIcon: "ic_launcher",
+                        link: `${notification.data.link}`,
                     });
                 }
             },
             onAction: function (notification) {
                 console.log("ACTION:", notification.action);
                 console.log("NOTIFICATION:", notification);
-                if (notification.action === "Yes") {
-                    Linking.openURL('https://play.google.com/store/apps/details?id=com.scantogooglesheets');
+                if (notification.action === "Xem thử") {
+                    Linking.openURL(notification.link);
+                    // Linking.openURL('https://play.google.com/store/apps/details?id=com.scantogooglesheets');
                 } else {
                     Linking.openURL('https://play.google.com/store/apps/details?id=com.hocexcel');
                 }

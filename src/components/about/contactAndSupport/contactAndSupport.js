@@ -46,8 +46,8 @@ const ContactAndSupport = () => {
                         <Text style={styles.body.content.group.bighead}>Chi tiết ứng dụng</Text>
                         <View style={{ flexGrow: 1, }}>
                             <Text style={styles.body.content.group.text}>Tên ứng dụng: Hoc Excel</Text>
-                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.1.7</Text>
-                            <Text style={styles.body.content.group.text}>Ngày phát hành: March 4, 2022</Text>
+                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.1.8</Text>
+                            <Text style={styles.body.content.group.text}>Ngày phát hành: March 5, 2022</Text>
                             <Text style={styles.body.content.group.text}>Chủ sở hữu: Pham Minh Kha</Text>
                         </View>
                     </View>

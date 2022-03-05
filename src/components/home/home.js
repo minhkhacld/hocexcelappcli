@@ -24,11 +24,10 @@ const Home = ({ navigation, route }) => {
         if (aborted === false) {
             dispatch(setData(FlatListData));
         }
-        // InterstitialAd();
+        InterstitialAd();
         return () => {
             abortController.abort();
         };
-
     }, []);
 
     const windowHeight = Dimensions.get('window').height;
