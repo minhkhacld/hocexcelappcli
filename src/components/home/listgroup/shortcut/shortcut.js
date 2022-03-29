@@ -1,7 +1,7 @@
 import React, { useState, } from 'react';
 import { StyleSheet, View, Text, FlatList, TextInput, SafeAreaView, TouchableNativeFeedback, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Banner from '../../../admob/banner';
 
 const ShortcutDetail = ({ navigation, route }) => {
@@ -21,8 +21,8 @@ const ShortcutDetail = ({ navigation, route }) => {
             <View style={{ top: StatusBar.currentHeight, flex: 1, paddingBottom: 90 }}>
                 <TouchableNativeFeedback>
                     <View style={styles.shortcutSearch} >
-                        <Icon name={'arrow-back-ios'} size={28} style={styles.goBackIcon} onPress={() => navigation.goBack()} />
-                        <Icon name={'search'} style={styles.icon} size={20} />
+                        <Icon name={'arrow-back-ios'} size={hp('4%')} style={styles.goBackIcon} onPress={() => navigation.goBack()} />
+                        <Icon name={'search'} style={styles.icon} size={hp('2%')} />
                         <TextInput style={styles.input} placeholder='Thử gõ + và tên phím để tìm nhanh...' onChangeText={(e) => setSearchValue(e)}
                             placeholderTextColor="black"
                         />
@@ -36,8 +36,8 @@ const ShortcutDetail = ({ navigation, route }) => {
                         ListHeaderComponent={() => {
                             return (
                                 <View style={styles.columnHeader}>
-                                    <Text style={[styles.textTitle, { fontSize: 14, fontWeight: 'bold', textAlign: 'center', borderRightWidth: 0.25 }]}>Phím tắt</Text>
-                                    <Text style={[styles.textDescription, { fontSize: 14, fontWeight: 'bold', textAlign: 'center', }]}>Công dụng</Text>
+                                    <Text style={[styles.textTitle, { fontSize: hp('2%'), fontWeight: 'bold', textAlign: 'center', borderRightWidth: 0.25 }]}>Phím tắt</Text>
+                                    <Text style={[styles.textDescription, { fontSize: hp('2%'), fontWeight: 'bold', textAlign: 'center', }]}>Công dụng</Text>
                                 </View>
                             )
                         }}
@@ -63,15 +63,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        height: 50,
+        height: hp('10%'),
     },
     input: {
         backgroundColor: '#F1F3F5',
         width: '75%',
-        height: 40,
-        paddingLeft: 30,
+        height: hp('7%'),
+        paddingLeft: wp('8%'),
         borderRadius: 40,
         color: "black",
+        fontSize: hp('1.6%'),
     },
     goBackIcon: {
         position: 'absolute',
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     icon: {
         position: 'absolute',
         zIndex: 1000,
-        left: '14%',
+        left: '16%',
         color: "black"
     },
 
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 5,
-        height: 45,
+        height: hp('5%'),
         justifyContent: 'center',
         backgroundColor: 'white',
         borderBottomColor: 'grey',
@@ -111,13 +112,13 @@ const styles = StyleSheet.create({
     },
     textTitle: {
         width: '40%',
-        fontSize: 12,
+        fontSize: hp('1.6%'),
         padding: 5,
         color: "black",
     },
     textDescription: {
         width: '60%',
-        fontSize: 12,
+        fontSize: hp('1.6%'),
         padding: 5,
         color: "black",
     },

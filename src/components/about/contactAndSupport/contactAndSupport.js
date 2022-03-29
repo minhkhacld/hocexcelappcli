@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Banner from '../../admob/banner';
 import axios from 'axios';
 import { API_SHEET_URL, API_MY_PROJECT } from '@env';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const ContactAndSupport = () => {
     const [projectData, setProjectData] = React.useState([]);
@@ -46,8 +47,8 @@ const ContactAndSupport = () => {
                         <Text style={styles.body.content.group.bighead}>Chi tiết ứng dụng</Text>
                         <View style={{ flexGrow: 1, }}>
                             <Text style={styles.body.content.group.text}>Tên ứng dụng: Hoc Excel</Text>
-                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.1.8</Text>
-                            <Text style={styles.body.content.group.text}>Ngày phát hành: March 5, 2022</Text>
+                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.1.9</Text>
+                            <Text style={styles.body.content.group.text}>Ngày cập nhật: March 29, 2022</Text>
                             <Text style={styles.body.content.group.text}>Chủ sở hữu: Pham Minh Kha</Text>
                         </View>
                     </View>
@@ -58,7 +59,7 @@ const ContactAndSupport = () => {
                             <TouchableOpacity onPress={() => Linking.openURL('mailto:' + 'pmkha92@gmail.com')}
                                 style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 10 }}>
                                 <Icon name={'email'} color={'#009DAE'} size={20} />
-                                <Text style={{ color: '#009DAE', textDecorationLine: 'underline', paddingLeft: 8 }}>Email: pmkha92@gmail.com</Text>
+                                <Text style={{ color: '#009DAE', textDecorationLine: 'underline', paddingLeft: 8, fontSize: hp('1.6%'), }}>Email: pmkha92@gmail.com</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => Linking.openURL(`tel:+84355210716`)}
                                 style={{
@@ -67,7 +68,7 @@ const ContactAndSupport = () => {
                                 }}
                             >
                                 <Icon name={'cellphone-iphone'} color={'#009DAE'} size={20} />
-                                <Text style={{ color: '#009DAE', textDecorationLine: 'underline', paddingLeft: 8 }}>Mobile: +84355210716</Text>
+                                <Text style={{ color: '#009DAE', textDecorationLine: 'underline', fontSize: hp('1.6%'), paddingLeft: 8 }}>Mobile: +84355210716</Text>
                             </TouchableOpacity>
                             <Text style={styles.body.content.group.text}>Nếu bạn thích ứng dụng này, xem xét ủng hộ mình ly cà phê tại:</Text>
                             <TouchableOpacity onPress={() => Linking.openURL(`https://www.buymeacoffee.com/pmkha`)}
@@ -77,12 +78,12 @@ const ContactAndSupport = () => {
                                 }}
                             >
                                 <Icon name={'coffee'} color={'#009DAE'} size={20} />
-                                <Text style={{ color: '#009DAE', paddingLeft: 8 }}>Buy me a coffee at: https://www.buymeacoffee.com/pmkha</Text>
+                                <Text style={{ color: '#009DAE', paddingLeft: 8, fontSize: hp('1.6%'), }}>Buy me a coffee at: https://www.buymeacoffee.com/pmkha</Text>
                             </TouchableOpacity>
 
                             {projectData.length > 0 &&
                                 <View style={{ marginTop: 10, width: '100%', height: 'auto' }}>
-                                    <Text style={{ color: 'black', marginBottom: 8, fontSize: 15, fontWeight: 'bold' }}>Ứng dụng khác của tôi:</Text>
+                                    <Text style={{ color: 'black', marginBottom: 8, fontSize: hp('1.6%'), fontWeight: 'bold' }}>Ứng dụng khác của tôi:</Text>
                                     {
                                         projectData.map((item, index) => {
                                             return (
@@ -92,12 +93,12 @@ const ContactAndSupport = () => {
                                                         , marginBottom: 10, width: '100%', height: 50,
                                                     }}
                                                 >
-                                                    <Text style={{ width: '70%', color: 'black' }}>{item.Descripton}</Text>
+                                                    <Text style={{ width: '70%', color: 'black', fontSize: hp('1.6%'), }}>{item.Descripton}</Text>
                                                     <View style={{ width: '30%', justifyContent: 'center', alignItems: 'center' }}>
                                                         <Image
                                                             style={{
-                                                                width: 40,
-                                                                height: 40,
+                                                                width: wp('10%'),
+                                                                height: wp('10%'),
                                                                 borderRadius: 5,
                                                             }}
                                                             source={{ uri: item.Picture }}
@@ -134,15 +135,15 @@ const styles = StyleSheet.create({
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            height: 70,
+            height: hp('10%'),
             tinyLogo: {
-                width: 40,
-                height: 40,
+                width: wp('10%'),
+                height: wp('10%'),
                 borderRadius: 5,
             },
             title: {
                 marginLeft: 20,
-                fontSize: 20,
+                fontSize: hp('3%'),
                 fontWeight: 'bold',
                 flexDirection: "row",
                 color: 'black',
@@ -152,13 +153,13 @@ const styles = StyleSheet.create({
             flex: 1,
             shortExplain: {
                 flexGrow: 1, flexDirection: 'column', marginTop: 15,
-                des: { flex: 1, color: 'black', marginBottom: 8 },
+                des: { flex: 1, color: 'black', marginBottom: 8, fontSize: hp('1.6%'), },
             },
             group: {
                 marginTop: 15,
-                bighead: { flex: 1, fontSize: 18, color: 'black', fontWeight: 'bold', marginBottom: 8, },
-                mediumhead: { flex: 1, fontSize: 15, color: 'black', fontWeight: 'bold', marginBottom: 8, },
-                text: { flex: 1, marginBottom: 8, color: 'black' },
+                bighead: { flex: 1, fontSize: hp('2%'), color: 'black', fontWeight: 'bold', marginBottom: 8, },
+                mediumhead: { flex: 1, fontSize: hp('1.6%'), color: 'black', fontWeight: 'bold', marginBottom: 8, },
+                text: { flex: 1, marginBottom: 8, color: 'black', fontSize: hp('1.6%'), },
             },
         },
     }

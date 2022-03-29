@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch } from 'react-redux';
 import { setListItemHeaderBarName } from '../../../redux/reducer';
@@ -25,7 +26,7 @@ const Listgroup = ({ navigation, ListGroupDATA }) => {
                                 }
                             }} >
                                 <ListItem containerStyle={styles.content} >
-                                    <Icon name={item.icon} size={40} style={styles.icon} />
+                                    <Icon name={item.icon} size={hp('6%')} style={styles.icon} />
                                     <ListItem.Content style={{ height: "100%", width: "100%", }}>
                                         <Text style={styles.description}>{item.vi}</Text>
                                     </ListItem.Content>
@@ -52,7 +53,6 @@ const styles = StyleSheet.create({
     },
     touchableOpacity: {
         height: "25%",
-        maxHeight: 70,
     },
     content: {
         justifyContent: "center",
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     description: {
         justifyContent: "center",
         alignItems: "center",
-        fontSize: 14,
+        fontSize: hp('2%'),
         color: '#14279B',
     },
     icon: {

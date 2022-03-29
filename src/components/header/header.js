@@ -4,6 +4,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import LinearGradient from 'react-native-linear-gradient';
 import { setSearchValue } from '../../redux/reducer';
 import { useDispatch } from 'react-redux';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const Header = () => {
     const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const Header = () => {
                         />
                     </View>
                 </LinearGradient>
-                <Icon name={'search'} size={20} style={styles.icon} color={'#14279B'} />
+                <Icon name={'search'} size={hp('2%')} style={styles.icon} color={'#14279B'} />
             </View>
         </View>
     );
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: '80%',
         height: 40,
-        paddingLeft: 35,
+        paddingLeft: wp('8%'),
         borderRadius: 20,
         top: ((90 - StatusBar.currentHeight) - 40) / 2,
         position: 'absolute',

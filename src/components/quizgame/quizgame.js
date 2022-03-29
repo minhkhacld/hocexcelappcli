@@ -12,7 +12,6 @@ import { InterstitialAd } from '../admob/imperativeAd';
 import FocusAwareStatusBar from '../header/statusBar';
 import ModalClaimReward from './modalClaimReward';
 
-
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }

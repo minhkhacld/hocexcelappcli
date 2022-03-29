@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch } from 'react-redux';
 import { setListItemHeaderBarName } from '../../../redux/reducer';
@@ -31,7 +32,7 @@ const CardGroup = ({ navigation, CardGroupDATA }) => {
                                     }}>
                                         <View style={styles.iconGroup}>
                                             <View style={styles.iconBorder}>
-                                                <Icon name={item.icon} style={styles.icon} size={40} />
+                                                <Icon name={item.icon} style={styles.icon} size={hp('6%')} />
                                             </View>
                                         </View>
                                         <View style={styles.title}>
@@ -60,7 +61,6 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 40,
         backgroundColor: '#F2F2F2',
         flex: 1,
-
     },
     contentContainerStyle: {
         flex: 1,
@@ -68,11 +68,12 @@ const styles = StyleSheet.create({
     },
     content: {
         width: '50%',
-        height: 140,
+        // height: 140,
+        height: hp('18%'),
         minHeight: 100,
         borderRadius: 30,
         justifyContent: 'space-evenly',
-        alignItems: 'center',
+        alignItems: 'center',      
     },
     touchableOpacity: {
         width: '70%',
@@ -105,7 +106,8 @@ const styles = StyleSheet.create({
 
     },
     vi: {
-        fontSize: 14, width: "90%",
+        fontSize: hp('2%'),
+        width: "90%",
         flex: 1, flexWrap: 'wrap',
         textAlign: 'center',
         color: '#14279B',

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setItemDetailHeaderBar, setListItemHeaderBarName } from '../../../../redux/reducer';
 import Banner from '../../../admob/banner';
 import { InterstitialAd } from '../../../admob/imperativeAd';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const ListItems = ({ navigation, route }) => {
     const [state, setState] = useState({
@@ -38,7 +39,7 @@ const ListItems = ({ navigation, route }) => {
                         }>
                             <ListItem containerStyle={styles.listContainer} >
                                 <View style={styles.iconGroup}>
-                                    <Icon name={item.icon} size={25} style={styles.icon} />
+                                    <Icon name={item.icon} size={hp('3%')} style={styles.icon} />
                                 </View>
                                 <ListItem.Content style={styles.content}>
                                     <ListItem.Title style={styles.title}>{item.title}</ListItem.Title>
@@ -50,7 +51,7 @@ const ListItems = ({ navigation, route }) => {
                     )
                 }}
             />
-            <Icon name="chevron-double-right" size={35} style={styles.goforwardIcon} onPress={() => {
+            <Icon name="chevron-double-right" size={hp('6%')} style={styles.goforwardIcon} onPress={() => {
                 if (state.groupDataIndex < RemoveShortcutArr.length - 1) {
                     setState({
                         ...state,
@@ -80,12 +81,12 @@ const styles = StyleSheet.create({
         color: "black",
     },
     contentContainerStyle: { padding: 10 },
-    listContainer: { marginBottom: 10, height: 90, borderRadius: 5 },
+    listContainer: { marginBottom: 10, height: hp('8%'), borderRadius: 5 },
     content: { marginLeft: 0 },
-    iconGroup: { justifyContent: 'center', alignItems: 'center', width: 25 },
+    iconGroup: { justifyContent: 'center', alignItems: 'center', width: wp('10%') },
     icon: { color: '#14279B' },
-    title: { fontSize: 14, fontWeight: 'bold', },
-    description: { fontSize: 12, color: "black" },
+    title: { fontSize: hp('2%'), fontWeight: 'bold', },
+    description: { fontSize: hp('1.5%'), color: "black" },
     goforwardIcon: {
         backgroundColor: 'transparent',
         color: '#14279B',

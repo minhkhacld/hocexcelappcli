@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, SafeAreaView, Image, FlatList } from 'react-native';
 import FocusAwareStatusBar from '../../header/statusBar';
 import Banner from '../../admob/banner';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const AboutDetail = ({ navigation, route }) => {
     let data = route.params.item.data;
@@ -67,13 +68,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    logo: { width: 50, height: 50 },
+    logo: { width: wp('10%'), height: wp('10%') },
     titleContainer: {
         width: '70%',
         marginLeft: 10
     },
     titleText: {
-        fontSize: 20,
+        fontSize: hp('3%'),
         fontWeight: 'bold',
         color: '#14279B'
     },
@@ -84,9 +85,9 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     contentText: {
-        padding: 5, color: "black"
+        padding: 5, color: "black", fontSize: hp('1.6%')
     },
-    note: { padding: 5, fontSize: 14, fontWeight: 'bold' },
+    note: { padding: 5, fontSize: hp('1.6%'), fontWeight: 'bold' },
     adMobBanner: {
         width: '100%',
         justifyContent: 'center', alignItems: 'center',

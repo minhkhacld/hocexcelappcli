@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from 'react-redux';
 import { closeSearchDropDown, setItemDetailHeaderBar } from '../../redux/reducer';
@@ -50,7 +51,7 @@ const FullScreenSearch = ({ navigation, SearchDATA }) => {
                 backgroundColor={'transparent'} translucent={true} barStyle="dark-content" />
             <View style={styles.search}>
                 <StatusBar backgroundColor={'white'} barStyle="dark-content" />
-                <Icon name={'arrow-back-ios'} size={30} style={styles.goBackIcon} onPress={() => dispatch(closeSearchDropDown())} />
+                <Icon name={'arrow-back-ios'} size={hp('4%')} style={styles.goBackIcon} onPress={() => dispatch(closeSearchDropDown())} />
                 <TextInput
                     style={styles.input}
                     onChangeText={(e) => setSearchValue(e)}
@@ -59,7 +60,7 @@ const FullScreenSearch = ({ navigation, SearchDATA }) => {
                     autoFocus={true}
                     returnKeyType='none'
                     value={searchValue} />
-                <Icon name={'search'} size={20} style={styles.icon} />
+                <Icon name={'search'} size={hp('2%')} style={styles.icon} />
             </View>
             <View style={styles.body}>
                 <View style={styles.resultContent}>
@@ -127,7 +128,8 @@ const styles = StyleSheet.create({
         minHeight: 40,
         borderRadius: 40,
         paddingLeft: '10%',
-        color: '#14279B'
+        color: '#14279B',
+        fontSize: hp('1.6%')
     },
     goBackIcon: {
         color: '#14279B',
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
     icon: {
         position: 'absolute',
         color: '#14279B',
-        top: '40%',
+        top: '43%',
         left: '18%',
     },
     //dropdown

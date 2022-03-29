@@ -1,13 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, TouchableOpacity, SafeAreaView, Linking, ToastAndroid } from 'react-native';
+import { FlatList, Linking, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AboutData from '../../asset/data/about_data';
-import FocusAwareStatusBar from '../header/statusBar';
 import Banner from '../admob/banner';
-import Share from 'react-native-share';
-import { InterstitialAd } from '../admob/imperativeAd';
-// import { SchemaNotifications } from '../notyfication/config';
+import FocusAwareStatusBar from '../header/statusBar';
 
 const About = ({ navigation, route }) => {
 
@@ -77,11 +76,11 @@ const styles = StyleSheet.create({
     flex: 1, paddingBottom: 45,
   },
   contentContainerStyle: { padding: 10 },
-  listContainer: { marginBottom: 10, height: 60, borderRadius: 5 },
+  listContainer: { marginBottom: 10, height: hp('8%'), borderRadius: 5 },
   iconGroup: { justifyContent: 'center', alignItems: 'center', width: 25, },
   icon: { color: '#14279B' },
-  title: { fontSize: 14, fontWeight: 'bold' },
-  description: { fontSize: 12 },
+  title: { fontSize: hp('2%'), fontWeight: 'bold' },
+  description: { fontSize: hp('1.5%') },
   policy: {
     backgroundColor: "red",
   }
