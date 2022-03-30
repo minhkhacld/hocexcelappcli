@@ -389,6 +389,19 @@ const path = [
                         { path: require('../../../../../asset/picture/tricts/synce_ggs_excel/synce_ggs_excel13.jpg') },
                     ]
                 },
+                {
+                    type: "Lưu trữ dữ liệu vào google sheets",
+                    child: [
+                        { path: require('../../../../../asset/picture/import_export/scan_to_sheets/appConnection.png') },
+                        { path: require('../../../../../asset/picture/import_export/scan_to_sheets/copyLink.png') },
+                        { path: require('../../../../../asset/picture/import_export/scan_to_sheets/pasteUrl.png') },
+                        { path: require('../../../../../asset/picture/import_export/scan_to_sheets/addSheets.png') },
+                        { path: require('../../../../../asset/picture/import_export/scan_to_sheets/setDefaultSheet.png') },
+                        { path: require('../../../../../asset/picture/import_export/scan_to_sheets/sendData.png') },
+                        { path: require('../../../../../asset/picture/import_export/scan_to_sheets/demoSheet.png') },
+                     
+                    ]
+                },
 
             ]
     },

@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Dimensions, FlatList, RefreshControl, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, RefreshControl, SafeAreaView, StatusBar, StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
 import { Image, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
@@ -126,6 +126,11 @@ const ListItemDetail = ({ navigation, route,
                                     }
                                     {item.explanation !== "" && <Text style={styles.explanation}>{"Giải thích: " + item.explanation}</Text>}
                                     {item.note !== "" && <ListItem.Subtitle style={styles.note}>{" Lưu ý: " + item.note}</ListItem.Subtitle>}
+                                    {item.title === "1. Bắt đầu" &&
+                                        <TouchableOpacity onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.scantogooglesheets')} style={styles.note}>
+                                            <Text style={{ color: 'blue' }}>{"Link tải ứng dụng Scan To Google Sheets"}</Text>
+                                        </TouchableOpacity>
+                                    }
                                 </ListItem.Content>
                             </ListItem>
                         </View>

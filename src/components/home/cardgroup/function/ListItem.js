@@ -21,7 +21,6 @@ const ListItems = ({ navigation, route }) => {
     return (
         <SafeAreaView style={styles.listItemContainer}>
             <StatusBar backgroundColor={'white'} barStyle="dark-content" />
-
             <FlatList
                 contentContainerStyle={styles.contentContainerStyle}
                 keyExtractor={(item, index) => String(index)}
@@ -34,7 +33,6 @@ const ListItems = ({ navigation, route }) => {
                         <TouchableOpacity onPress={() => {
                             navigation.navigate('ListItemDetail', { item, listIndex, DATA: state.DATA });
                             dispatch(setItemDetailHeaderBar(item.title));
-
                         }
                         }>
                             <ListItem containerStyle={styles.listContainer} >
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
     content: { marginLeft: 0 },
     iconGroup: { justifyContent: 'center', alignItems: 'center', width: wp('10%') },
     icon: { color: '#14279B' },
-    title: { fontSize: hp('2%'), fontWeight: 'bold', },
+    title: { fontSize: hp('1.7%'), fontWeight: 'bold', },
     description: { fontSize: hp('1.5%'), color: "black" },
     goforwardIcon: {
         backgroundColor: 'transparent',

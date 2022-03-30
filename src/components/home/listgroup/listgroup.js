@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     description: {
         justifyContent: "center",
         alignItems: "center",
-        fontSize: hp('2%'),
+        fontSize: hp('1.7%'),
         color: '#14279B',
     },
     icon: {

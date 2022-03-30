@@ -18,26 +18,25 @@ const ShortcutDetail = ({ navigation, route }) => {
     return (
         <SafeAreaView style={{ flex: 1, paddingBottom: 45 }} >
             <StatusBar backgroundColor={'white'} barStyle="dark-content" />
-            <View style={{ top: StatusBar.currentHeight, flex: 1, paddingBottom: 90 }}>
+            <View style={{ top: StatusBar.currentHeight, flex: 1, }}>
                 <TouchableNativeFeedback>
                     <View style={styles.shortcutSearch} >
                         <Icon name={'arrow-back-ios'} size={hp('4%')} style={styles.goBackIcon} onPress={() => navigation.goBack()} />
                         <Icon name={'search'} style={styles.icon} size={hp('2%')} />
                         <TextInput style={styles.input} placeholder='Thử gõ + và tên phím để tìm nhanh...' onChangeText={(e) => setSearchValue(e)}
-                            placeholderTextColor="black"
+                            placeholderTextColor="black" selectTextOnFocus
                         />
                     </View>
                 </TouchableNativeFeedback>
                 <View style={styles.container}>
-
                     <FlatList
                         data={ShortcutData}
                         keyExtractor={(item, index) => String(index)}
                         ListHeaderComponent={() => {
                             return (
                                 <View style={styles.columnHeader}>
-                                    <Text style={[styles.textTitle, { fontSize: hp('2%'), fontWeight: 'bold', textAlign: 'center', borderRightWidth: 0.25 }]}>Phím tắt</Text>
-                                    <Text style={[styles.textDescription, { fontSize: hp('2%'), fontWeight: 'bold', textAlign: 'center', }]}>Công dụng</Text>
+                                    <Text style={[styles.textTitle, { fontSize: hp('1.6%'), fontWeight: 'bold', textAlign: 'center', borderRightWidth: 0.25 }]}>Phím tắt</Text>
+                                    <Text style={[styles.textDescription, { fontSize: hp('1.6%'), fontWeight: 'bold', textAlign: 'center', }]}>Công dụng</Text>
                                 </View>
                             )
                         }}
@@ -52,6 +51,7 @@ const ShortcutDetail = ({ navigation, route }) => {
                         }}
                     />
                 </View>
+
             </View>
             <Banner />
         </SafeAreaView>

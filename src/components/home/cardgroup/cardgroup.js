@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     icon: { color: '#14279B' },
     title: {
         height: '35%',
-        width: '60%',
+        width: '80%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
 
     },
     vi: {
-        fontSize: hp('2%'),
+        fontSize: hp('1.7%'),
         width: "90%",
         flex: 1, flexWrap: 'wrap',
         textAlign: 'center',

@@ -1463,6 +1463,56 @@ const FlatListData = [
 
             ]
           },
+          {
+            title: "Lưu trữ dữ liệu vào google sheets",
+            icon: "cloud-upload",
+            description_en: "",
+            description_vi: "Lưu trũ dũ liệu tồn kho, chấm công, điểm danh...tụ động lên google sheets",
+            data: [
+              {
+                title: "1. Bắt đầu",
+                description_vi: `Đây là sự kết hợp giũa ứng dụng quét mã QR, Barcode và google sheets. Vậy trước tiên bạn cần phải tải về ứng dụng Scan To Google Sheets`,
+                note: ``,
+                explanation: ``,
+              },
+              {
+                title: `2.  Cài đặt trang tính`,
+                description_vi: `Trên trang google sheets. Chuyển sang trạng thái chia sẽ, hãy để chế độ bất kỳ ai có đường liên kết (Lưu ý: phải để chế độ nguòi chỉnh sữa), Click sao chép liên kết và cuối cùng click OK xác nhận.`,
+                explanation: ``,
+                note: ``,
+              },
+              {
+                title: `3. Mở ứng dụng Scan To Google Sheets và dán địa chỉ liên kết google sheets vào ô URL`,
+                description_vi: `Click biểu tượng cây viết để nhập`,
+                explanation: ``,
+                note: ``,
+              },
+              {
+                title: `4. Tạo thêm Sheet mới vào các giá trị mặc định`,
+                description_vi: `Nhấn thêm sheet để tạo sheet`,
+                explanation: `Thêm tiêu đề và giá trị mặc định cho các cột`,
+                note: ``,
+              },
+              {
+                title: `5. Đặt trang tính mói tạo làm trang tính mạc định`,
+                description_vi: `Dũ liệu sau khi quét mã QR, Bar code sẽ được gủi vào trang tính mặc định`,
+                explanation: ``,
+                note: ``,
+              },
+              {
+                title: `6. Quét mã và gủi`,
+                description_vi: `Giò đây bạn có thể quét và lưu trữ dữ liệu cần thiết`,
+                explanation: ``,
+                note: ``,
+              },
+              {
+                title: `7. Kết quả`,
+                description_vi: ``,
+                explanation: ``,
+                note: ``,
+              },
+            ]
+          },
         ]
       },
     ]
