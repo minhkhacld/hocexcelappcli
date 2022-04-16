@@ -17,6 +17,7 @@ import AboutDetail from './src/components/about/detail/aboutDetail';
 import QuizGame from './src/components/quizgame/quizgame';
 import QuizgameResult from './src/components/quizgame/result';
 import ContactAndSupport from './src/components/about/contactAndSupport/contactAndSupport';
+import YoutubeLession from './src/components/youtube/youtube.Lession'
 //Icon
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -64,6 +65,18 @@ const App = () => {
     )
   };
 
+
+  const YouTubeLessonScreen = ({ navigation }) => {
+    return (
+      <QuizGameStack.Navigator initialRouteName="YoutubeLesson" >
+        <QuizGameStack.Screen name="YoutubeLesson"
+          options={{
+            headerShown: false,
+          }} component={YoutubeLession} />
+      </QuizGameStack.Navigator >
+    )
+  };
+
   const AboutStackScreen = ({ navigation }) => {
     return (
       <AboutStack.Navigator initialRouteName="About"
@@ -95,15 +108,18 @@ const App = () => {
               else if (route.name === 'QuizGameTab') {
                 iconName = focused ? 'gamepad-variant-outline' : 'gamepad-variant-outline';
               }
+              else if (route.name === 'YouTubeTab') {
+                iconName = focused ? 'youtube' : 'youtube';
+              }
               // You can return any component that you like here!
               return <Icon name={iconName} size={size} color={color} />;
             },
             tabBarActiveTintColor: 'tomato',
-            tabBarInactiveTintColor: route.name === 'HomeTab' ? "grey" : route.name === 'QuizGameTab' ? 'white' : "white",
+            tabBarInactiveTintColor: route.name === 'HomeTab' ? "grey" : route.name === 'QuizGameTab' ? 'white' : route.name === 'YouTubeTab' ? "black" : "white",
             tabBarHideOnKeyboard: true,
             tabBarStyle: {
               borderTopWidth: 0,
-              backgroundColor: route.name === 'HomeTab' ? "white" : route.name === 'QuizGameTab' ? '#1E3163' : "#009DAE",
+              backgroundColor: route.name === 'HomeTab' ? "white" : route.name === 'QuizGameTab' ? '#1E3163' : route.name === 'YouTubeTab' ? "#FFF56D" : "#009DAE",
               borderTopRightRadius: 20,
               borderTopLeftRadius: 20,
               height: 45,
@@ -118,6 +134,8 @@ const App = () => {
           <Tab.Screen name="HomeTab" component={HomeStackScreen} options={{ headerShown: false, tabBarShowLabel: false }
           } />
           <Tab.Screen name="QuizGameTab" component={QuizGameStackScreen} options={{ headerShown: false, tabBarShowLabel: false }
+          } />
+          <Tab.Screen name="YouTubeTab" component={YouTubeLessonScreen} options={{ headerShown: false, tabBarShowLabel: false }
           } />
           <Tab.Screen name="AboutTab" component={AboutStackScreen} options={{
             headerShown: false, tabBarShowLabel: false
