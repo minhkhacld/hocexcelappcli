@@ -32,7 +32,7 @@ const QuizGame = [
     },
     {
         question: `Câu hỏi: Các ô nằm trên dòng hoặc cột bị che dấu (hide) thì`,
-        correct_option: `C. Không tồn tại trong bảng tính`,
+        correct_option: `A. Không nhìn thấy trên màn hình`,
         option: [
             `A. Không nhìn thấy trên màn hình`,
             `B. Không có giá trị tham chiếu`,
@@ -600,7 +600,7 @@ const QuizGame = [
             `D. Nằm trọng cột bất kỳ của của vùng dữ liệu tìm kiếm`,],
         picture: ``,
     },
-    
+
 
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Linking, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Linking, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Banner from '../../admob/banner';
 import axios from 'axios';
@@ -7,9 +7,12 @@ import { API_SHEET_URL, API_MY_PROJECT } from '@env';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const ContactAndSupport = () => {
+    const [loading, setLoading] = React.useState(false);
     const [projectData, setProjectData] = React.useState([]);
 
     React.useEffect(() => {
+
+        setLoading(true);
         const data = {
             sheetName: "MyProject",
             sheetUrl: `${API_SHEET_URL}`
@@ -26,9 +29,11 @@ const ContactAndSupport = () => {
                         arr.push(obj);
                     })
                     setProjectData(arr);
+                    setLoading(false);
                 }
             }).catch(err => {
                 alert(err);
+                setLoading(false);
             });
     }, []);
 
@@ -47,8 +52,8 @@ const ContactAndSupport = () => {
                         <Text style={styles.body.content.group.bighead}>Chi tiết ứng dụng</Text>
                         <View style={{ flexGrow: 1, }}>
                             <Text style={styles.body.content.group.text}>Tên ứng dụng: Hoc Excel</Text>
-                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.2.1</Text>
-                            <Text style={styles.body.content.group.text}>Ngày cập nhật: April 16, 2022</Text>
+                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.2.2</Text>
+                            <Text style={styles.body.content.group.text}>Ngày cập nhật: May 26, 2022</Text>
                             <Text style={styles.body.content.group.text}>Chủ sở hữu: Pham Minh Kha</Text>
                         </View>
                     </View>
@@ -114,7 +119,14 @@ const ContactAndSupport = () => {
                         </View>
                     </View>
                 </View>
+
             </ScrollView>
+            {loading &&
+                <View style={styles.sending}>
+                    <ActivityIndicator size="large" color="#00ff00" />
+                    <Text style={styles.sending.text}>Loading data, please wait...</Text>
+                </View>
+            }
             <Banner />
         </SafeAreaView>
     )
@@ -162,7 +174,16 @@ const styles = StyleSheet.create({
                 text: { flex: 1, marginBottom: 8, color: 'black', fontSize: hp('1.6%'), },
             },
         },
-    }
+    },
+    sending: {
+        position: "absolute", width: "100%", height: "100%", justifyContent: "center", alignItems: "center", flexDirection: "column",
+        zIndex: 1000, flex: 1, backgroundColor: "#00000080",
+        text: {
+            color: 'white', fontWeight: 'bold',
+            fontSize: hp('2%'),
+            marginTop: 30,
+        },
+    },
 
 })
 
