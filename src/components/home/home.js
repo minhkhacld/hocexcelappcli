@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Dimensions, KeyboardAvoidingView, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import FlatListData from '../../asset/data/function_data';
@@ -12,22 +12,23 @@ import { InterstitialAd } from '../admob/imperativeAd';
 import RemotePushController from '../notyfication/remotePushController';
 import DoubleTapToClose from '../exitApp/exitApp';
 import KeepAwake from 'react-native-keep-awake';
+import useIsMountedRef from '../../hooks/useIsMountedRef';
 
 const Home = ({ navigation, route }) => {
     const dispatch = useDispatch();
     const reducer = useSelector((store) => {
         return store.Reducer
     });
+
+    const isMounted = useIsMountedRef();
+
+    const getAppData = useCallback(() => {
+        dispatch(setData(FlatListData));
+    }, [isMounted])
+
     useEffect(() => {
-        let abortController = new AbortController();
-        let aborted = abortController.signal.aborted;
-        if (aborted === false) {
-            dispatch(setData(FlatListData));
-        }
+        getAppData();
         InterstitialAd();
-        return () => {
-            abortController.abort();
-        };
     }, []);
 
     const windowHeight = Dimensions.get('window').height;

@@ -233,7 +233,7 @@ const QuizGame = ({ navigation,
     //     "ignoreWrongAsw", ignoreWrongAsw,
     //     "modalVisible", modalVisible,
     // );
-    console.log('intertial', ignoreWrongAsw);
+    // console.log('intertial', ignoreWrongAsw);
 
     return (
         <SafeAreaView style={styles.container}>

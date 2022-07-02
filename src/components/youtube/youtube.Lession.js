@@ -1,6 +1,6 @@
 import axios from 'axios';
-import React from 'react';
-import { StyleSheet, View, ScrollView, Text, Animated, TouchableOpacity, StatusBar, Linking, ActivityIndicator, TextInput } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, View, ScrollView, Platform, Text, Animated, TouchableOpacity, StatusBar, Linking, ActivityIndicator, TextInput } from 'react-native';
 import FocusAwareStatusBar from '../../components/header/statusBar';
 import { useIsFocused } from '@react-navigation/native';
 import { API_YOUTUBE_KEY, YOUTUBE_CHANNEL_ID } from '@env';
@@ -13,6 +13,7 @@ import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context'
 import { Tooltip, colors } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Banner from '../../components/admob/banner';
+import useIsMountedRef from '../../hooks/useIsMountedRef';
 
 const YoutubeLession = () => {
     const isFocused = useIsFocused();
@@ -20,9 +21,12 @@ const YoutubeLession = () => {
     const [youtube_Videos, setYoutube_Videos] = React.useState({
         data: {},
     });
+
     const offset = React.useRef(new Animated.Value(0)).current;
     const inputRef = React.useRef(null);
     const insets = useSafeAreaInsets();
+    const isMountedRef = useIsMountedRef();
+
 
 
     const [searchVideos, setSearchVideos] = React.useState({
@@ -30,31 +34,36 @@ const YoutubeLession = () => {
         isVisible: false,
     });
 
-    React.useEffect(() => {
-        if (isFocused) {
-            setLoading(true);
-            axios.get(`https://www.googleapis.com/youtube/v3/channels?id=${YOUTUBE_CHANNEL_ID}&maxResults=50&key=${API_YOUTUBE_KEY}&part=contentDetails`).then(
-                async response => {
-                    // console.log(response.data);
-                    let channel = await response.data.items
-                    if (channel.length > 0) {
-                        channel.forEach(async d => {
-                            await axios.get(`https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${d.contentDetails.relatedPlaylists.uploads}&key=${API_YOUTUBE_KEY}&part=snippet&maxResults=50`).then(
-                                res => {
-                                    // console.log(res.data.items)
-                                    if (res.data.items.length > 0) {
-                                        let videoList = res.data;
-                                        videoList.items = videoList.items.filter(v => v.snippet.title !== "Scan To Google Sheets Intro").sort((a, b) => (b.snippet.publishedAt - a.snippet.publishedAt));
-                                        setYoutube_Videos({ ...youtube_Videos, data: videoList });
-                                        setLoading(false);
-                                    }
+    const calApiYoutube = useCallback(() => {
+        // if (isFocused) {
+        setLoading(true);
+        axios.get(`https://www.googleapis.com/youtube/v3/channels?id=${YOUTUBE_CHANNEL_ID}&maxResults=50&key=${API_YOUTUBE_KEY}&part=contentDetails`).then(
+            async response => {
+                // console.log(response.data);
+                let channel = await response.data.items
+                if (channel.length > 0) {
+                    channel.forEach(async d => {
+                        await axios.get(`https://www.googleapis.com/youtube/v3/playlistItems?playlistId=${d.contentDetails.relatedPlaylists.uploads}&key=${API_YOUTUBE_KEY}&part=snippet&maxResults=50`).then(
+                            res => {
+                                // console.log(res.data.items)
+                                if (res.data.items.length > 0) {
+                                    let videoList = res.data;
+                                    videoList.items = videoList.items.filter(v => v.snippet.title !== "Scan To Google Sheets Intro").sort((a, b) => (b.snippet.publishedAt - a.snippet.publishedAt));
+                                    setYoutube_Videos({ ...youtube_Videos, data: videoList });
                                 }
-                            ).catch(err => alert('error', err))
-                        })
-                    }
+                            }
+                        ).catch(err => alert('error', err))
+                    })
                 }
-            ).catch(err => alert(err));
-        }
+            }
+        ).catch(err => alert(err));
+        setLoading(false);
+        // };
+
+    }, [isMountedRef.current])
+
+    React.useEffect(() => {
+        calApiYoutube();
     }, []);
 
 
@@ -117,7 +126,7 @@ const YoutubeLession = () => {
     const countVideos = searchVideos.value === "" ? Object.keys(youtube_Videos.data).length > 0 ? youtube_Videos.data.items.length > 0 ? youtube_Videos.data.items.length : 0 : 0
         : renderVideos.length;
 
-    // console.log('youtube_videos', youtube_Videos.data);
+    // console.log('youtube_videos', renderVideos);
     // console.log('offset', offset, insets)
 
     return (
@@ -158,7 +167,7 @@ const YoutubeLession = () => {
             >
                 <View style={styles.container.body.list}>
                     <View style={styles.container.body.list.title}>
-                        <Text style={styles.container.body.list.title.text}>Tất cả các video:
+                        <Text style={styles.container.body.list.title.text}>Video của tôi:
                             <Text style={{ color: 'black' }}>{" " + countVideos}</Text>
                         </Text>
                         <Tooltip
@@ -189,7 +198,12 @@ const YoutubeLession = () => {
                                     height={hp('30%')}
                                     maxHeight={300}
                                     width={wp('95%')}
-                                    // play={false}
+                                    webViewProps={{
+                                        opacity: 0.99,
+                                        renderToHardwareTextureAndroid: true,
+                                        androidLayerType:
+                                            Platform.OS === 'android' && Platform.Version <= 22 ? 'hardware' : 'none',
+                                    }}
                                     videoId={video.snippet.resourceId.videoId}
                                 />
                                 <View style={styles.container.body.list.card.info}>
@@ -214,7 +228,7 @@ const YoutubeLession = () => {
             {loading &&
                 <View style={styles.sending}>
                     <ActivityIndicator size="large" color="#00ff00" />
-                    <Text style={styles.sending.text}>Loading lesson, please wait...</Text>
+                    <Text style={styles.sending.text}>Đang tải dữ liệu, vui lòng chờ...</Text>
                 </View>
             }
             <Banner />
@@ -259,7 +273,10 @@ const styles = StyleSheet.create({
             },
         },
         body: {
-            width: '100%', height: '100%', paddingTop: StatusBar.currentHeight + hp('5%'),
+            width: '100%',
+            // height: '100%',
+            height: hp('80%'),
+            paddingTop: StatusBar.currentHeight + hp('5%'),
 
             list: {
                 width: '100%', paddingBottom: 100,

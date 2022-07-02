@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Image, Linking, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Banner from '../../admob/banner';
 import axios from 'axios';
 import { API_SHEET_URL, API_MY_PROJECT } from '@env';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import useIsMountedRef from '../../../hooks/useIsMountedRef';
+
 
 const ContactAndSupport = () => {
     const [loading, setLoading] = React.useState(false);
     const [projectData, setProjectData] = React.useState([]);
+    const isMounted = useIsMountedRef();
 
-    React.useEffect(() => {
+    const calApiProject = useCallback(() => {
 
         setLoading(true);
         const data = {
@@ -28,13 +31,44 @@ const ContactAndSupport = () => {
                         obj = row.reduce((a, v, currentIndex) => ({ ...a, [headersArr[currentIndex]]: v }), {});
                         arr.push(obj);
                     })
-                    setProjectData(arr);
-                    setLoading(false);
+                    if (isMounted.current) {
+                        setProjectData(arr);
+                        setLoading(false);
+                    }
+
                 }
             }).catch(err => {
                 alert(err);
                 setLoading(false);
             });
+
+    }, [isMounted])
+
+    React.useEffect(() => {
+        calApiProject();
+        // setLoading(true);
+        // const data = {
+        //     sheetName: "MyProject",
+        //     sheetUrl: `${API_SHEET_URL}`
+        // }
+        // axios.post(`${API_MY_PROJECT}`, { data: data })
+        //     .then(response => {
+        //         // console.log('respone api', response.data.headers);
+        //         if (response.data.data.length > 0) {
+        //             let obj = {};
+        //             let arr = []
+        //             response.data.data.forEach((row, index) => {
+        //                 let headersArr = response.data.headers;
+        //                 obj = row.reduce((a, v, currentIndex) => ({ ...a, [headersArr[currentIndex]]: v }), {});
+        //                 arr.push(obj);
+        //             })
+        //             setProjectData(arr);
+        //             setLoading(false);
+        //         }
+        //     }).catch(err => {
+        //         alert(err);
+        //         setLoading(false);
+        //     });
     }, []);
 
     return (
@@ -52,8 +86,8 @@ const ContactAndSupport = () => {
                         <Text style={styles.body.content.group.bighead}>Chi tiết ứng dụng</Text>
                         <View style={{ flexGrow: 1, }}>
                             <Text style={styles.body.content.group.text}>Tên ứng dụng: Hoc Excel</Text>
-                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.2.2</Text>
-                            <Text style={styles.body.content.group.text}>Ngày cập nhật: May 26, 2022</Text>
+                            <Text style={styles.body.content.group.text}>Phiên bản ứng dụng: 1.2.3</Text>
+                            <Text style={styles.body.content.group.text}>Ngày cập nhật: July, 2, 2022</Text>
                             <Text style={styles.body.content.group.text}>Chủ sở hữu: Pham Minh Kha</Text>
                         </View>
                     </View>
@@ -75,6 +109,15 @@ const ContactAndSupport = () => {
                                 <Icon name={'cellphone-iphone'} color={'#009DAE'} size={20} />
                                 <Text style={{ color: '#009DAE', textDecorationLine: 'underline', fontSize: hp('1.6%'), paddingLeft: 8 }}>Mobile: +84355210716</Text>
                             </TouchableOpacity>
+                            <TouchableOpacity onPress={() => Linking.openURL(`https://portfolio-minhkhacld.vercel.app/`)}
+                                style={{
+                                    flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'
+                                    , marginBottom: 10
+                                }}
+                            >
+                                <Icon name={'web'} color={'#009DAE'} size={20} />
+                                <Text style={{ color: '#009DAE', textDecorationLine: 'underline', paddingLeft: 8 }}>Website: https://portfolio-minhkhacld.vercel.app/</Text>
+                            </TouchableOpacity>
                             <Text style={styles.body.content.group.text}>Nếu bạn thích ứng dụng này, xem xét ủng hộ mình ly cà phê tại:</Text>
                             <TouchableOpacity onPress={() => Linking.openURL(`https://www.buymeacoffee.com/pmkha`)}
                                 style={{
@@ -85,6 +128,7 @@ const ContactAndSupport = () => {
                                 <Icon name={'coffee'} color={'#009DAE'} size={20} />
                                 <Text style={{ color: '#009DAE', paddingLeft: 8, fontSize: hp('1.6%'), }}>Buy me a coffee at: https://www.buymeacoffee.com/pmkha</Text>
                             </TouchableOpacity>
+
 
                             {projectData.length > 0 &&
                                 <View style={{ marginTop: 10, width: '100%', height: 'auto' }}>
@@ -124,7 +168,7 @@ const ContactAndSupport = () => {
             {loading &&
                 <View style={styles.sending}>
                     <ActivityIndicator size="large" color="#00ff00" />
-                    <Text style={styles.sending.text}>Loading data, please wait...</Text>
+                    <Text style={styles.sending.text}>Đang tải dữ liệu, vui lòng chờ...</Text>
                 </View>
             }
             <Banner />
@@ -162,7 +206,7 @@ const styles = StyleSheet.create({
             },
         },
         content: {
-            flex: 1,
+            flex: 1, minHeight: 700,
             shortExplain: {
                 flexGrow: 1, flexDirection: 'column', marginTop: 15,
                 des: { flex: 1, color: 'black', marginBottom: 8, fontSize: hp('1.6%'), },
