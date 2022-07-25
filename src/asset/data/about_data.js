@@ -1,12 +1,27 @@
 const AboutData = [
-    // {
-    //     title: "Nhắc nhở tôi học Excel",
-    //     icon: "reminder",
-    //     description_en: "",
-    //     description_vi: "Đặt lịch nhắc nhở bạn học excel hằng ngày",
-    //     data: [
-    //     ]
-    // },
+    {
+        title: "Trở thành thành viên Premium",
+        icon: "account-star",
+        description_en: "",
+        description_vi: "Nâng cấp bản Premium",
+        data: [
+            {
+                title: "Tại sao cần nâng cấp bản Premium",
+                description_vi: `Xin cảm ơn bạn đã download và sử dụng Hoc Excel (tên gọi khác là E2SOFT). Với mong muốn giúp mọi người có thể học excel mọi lúc mọi nơi ngay cả khi không có internet. E2SOFT được phát triển để giúp việc học excel trở nên dễ dàng, thuận tiện và hiệu quả. ESOFT rất hân hạnh trong việc hỗ trợ phát triển kỷ năng Excel của bạn. Chúng tôi luôn tìm tìm những ý tưởng tốt nhất để đưa vào ứng dụng giúp bạn học hiểu quả và nhanh chóng hơn.`,
+                note: "",
+                explanation: "",
+            },
+            {
+                title: "",
+                description_vi: `Với việc tích hợp nhiều kiến thức từ các hàm excel, định dạng, nhập xuất dữ liệu, biểu đồ, các phím tắt, in ấn, và VBA. E2SOFT mang lại cho bạn một lượng kiến thức phổ quát và đầy đủ về excel. Chúng tôi vẫn luôn phát triển những chủ đề mới, và cải tiến tiến thêm những chủ đề hiện tại để ứng dụng ngày càng bổ ích.`,
+                note: "",
+                explanation: "",
+            },
+           
+
+
+        ]
+    },
     {
         title: "Giới thiệu",
         icon: "information",

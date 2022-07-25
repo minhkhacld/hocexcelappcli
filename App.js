@@ -20,6 +20,7 @@ import ContactAndSupport from './src/components/about/contactAndSupport/contactA
 import YoutubeLession from './src/components/youtube/youtube.Lession'
 //Icon
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import GoPremium from './src/components/about/premium/premium';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -86,6 +87,8 @@ const App = () => {
         }} />
         <AboutStack.Screen name="AboutDetail" component={AboutDetail} options={({ route }) => ({ title: route.params.item.title })} />
         <AboutStack.Screen name="ContactAndSupport" component={ContactAndSupport} options={({ route }) => ({ title: "Liên hệ và hỗ trợ" })} />
+        <AboutStack.Screen name="GoPremium" component={GoPremium} options={({ route }) => ({ title: "Nâng cấp bản Premium" })} />
+
       </AboutStack.Navigator>
     )
   };
