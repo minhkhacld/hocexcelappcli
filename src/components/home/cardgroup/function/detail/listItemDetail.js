@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
 import { setItemDetailHeaderBar } from '../../../../../redux/reducer';
 import Banner from '../../../../admob/banner';
-import { InterstitialAd } from '../../../../admob/imperativeAd';
+// import { InterstitialAd } from '../../../../admob/imperativeAd';
 import path from './global';
 // import {
 //     AdEventType
@@ -162,7 +162,7 @@ const ListItemDetail = ({ navigation, route,
                         dispatch(setItemDetailHeaderBar(DATA[0].title));
                         myList.current.scrollToIndex({ animated: true, index: 0, viewPosition: 0 });
                     }
-                    InterstitialAd();
+                    // InterstitialAd();
                 }} />
             }
             <Banner />

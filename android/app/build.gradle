@@ -144,8 +144,8 @@ android {
         applicationId 'com.hocexcel'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 14
-        versionName '1.2.4'
+        versionCode 15
+        versionName '1.2.5'
 
     //admob
      multiDexEnabled true
@@ -232,19 +232,12 @@ dependencies {
   // https://firebase.google.com/docs/android/setup#available-libraries
 
     //addmob
-    implementation 'com.google.android.gms:play-services-ads:19.8.0'
-    // implementation 'com.google.android.gms:play-services-ads:18.1.0'
-    //  implementation 'com.google.android.gms:play-services-ads:20.5.0'
-    //      implementation( project(':react-native-admob') ){
-    //     exclude group: "com.google.android.gms"
-    //   }
-    // implementation "com.google.android.gms:play-services-ads:17.2.1"
-    // implementation "com.google.firebase:firebase-ads:17.2.1"
+    // implementation 'com.google.android.gms:play-services-ads:19.8.0'
     implementation 'com.android.support:multidex:1.0.3'
     //firebase
     implementation project(':react-native-push-notification')
     implementation 'com.google.firebase:firebase-analytics:17.3.0'
-    implementation platform('com.google.firebase:firebase-bom:29.0.3')
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setItemDetailHeaderBar, setListItemHeaderBarName } from '../../../../redux/reducer';
 import Banner from '../../../admob/banner';
-import { InterstitialAd } from '../../../admob/imperativeAd';
+// import { InterstitialAd } from '../../../admob/imperativeAd';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const ListItems = ({ navigation, route }) => {
@@ -65,7 +65,7 @@ const ListItems = ({ navigation, route }) => {
                     });
                     dispatch(setListItemHeaderBarName(RemoveShortcutArr[0].vi))
                 };
-                InterstitialAd();
+                // InterstitialAd();
             }} />
             <Banner />
         </SafeAreaView>

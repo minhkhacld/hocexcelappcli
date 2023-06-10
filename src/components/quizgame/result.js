@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, StatusBar } fro
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Banner from '../admob/banner';
-import { InterstitialAd } from '../admob/imperativeAd';
+// import { InterstitialAd } from '../admob/imperativeAd';
 
 const QuizgameResult = ({ navigation, route }) => {
     // console.log(route)
@@ -46,7 +46,7 @@ const QuizgameResult = ({ navigation, route }) => {
                 <LinearGradient colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGroup}>
                     <TouchableOpacity onPress={() => {
                         navigation.navigate('QuizGame');
-                        InterstitialAd();
+                        // InterstitialAd();
                     }}
                         style={styles.goBackHome}>
                         <Text style={styles.textGoBackHome}>Quay về</Text>

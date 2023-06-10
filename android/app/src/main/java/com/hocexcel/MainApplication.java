@@ -14,9 +14,6 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-//addmob
-import com.sbugert.rnadmob.RNAdMobPackage;
-//
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -87,5 +84,6 @@ public class MainApplication extends Application implements ReactApplication {
         e.printStackTrace();
       }
     }
+
   }
 }

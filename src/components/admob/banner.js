@@ -1,32 +1,34 @@
+// import React from 'react';
+// import { bannerAdId } from './adMobId';
+
+// const Banner = () => {
+//     return (
+
+//         <AdMobBanner
+//             adSize="fullBanner"
+//             adUnitID={bannerAdId}
+//             onAdFailedToLoad={error => console.error(error)}
+//         />
+//     )
+// }
+
+// export default Banner
+
 import React from 'react';
-import { BannerAdSize, BannerAd, } from '@react-native-firebase/admob';
-import { bannerAdId } from './adMobId';
-import {
-    AdMobBanner,
-} from 'react-native-admob';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
-const Banner = () => {
-    return (
-        // <BannerAd
-        //     unitId={bannerAdId}
-        //     size={BannerAdSize.FULL_BANNER}
-        //     requestOptions={{
-        //         requestNonPersonalizedAdsOnly: false,
-        //     }}
-        //     onAdFailedToLoad={(error) => {
-        //         console.log(error)
-        //         // if (error) {
-        //         //     setShowBanner(false)
-        //         // }
-        //     }}
-        // />
+const adUnitId = __DEV__
+  ? TestIds.BANNER
+  : 'ca-app-pub-8774393929760728/9421290027';
 
-        <AdMobBanner
-            adSize="fullBanner"
-            adUnitID={bannerAdId}
-            onAdFailedToLoad={error => console.error(error)}
-        />
-    )
+export default function Banner() {
+  return (
+    <BannerAd
+      unitId={adUnitId}
+      size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+    />
+  );
 }
-
-export default Banner

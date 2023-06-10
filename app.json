@@ -1,4 +1,8 @@
 {
   "name": "hocexcel",
-  "displayName": "Hoc Excel"
+  "displayName": "Hoc Excel",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-8774393929760728~5524608745",
+    "ios_app_id": "ca-app-pub-8774393929760728~5524608745"
+  }
 }
