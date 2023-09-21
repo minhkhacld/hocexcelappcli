@@ -107,10 +107,10 @@ const ContactAndSupport = () => {
                 Tên ứng dụng: Hoc Excel
               </Text>
               <Text style={styles.body.content.group.text}>
-                Phiên bản ứng dụng: 1.2.5
+                Phiên bản ứng dụng: 1.2.6
               </Text>
               <Text style={styles.body.content.group.text}>
-                Ngày cập nhật: June, 10, 2023
+                Ngày cập nhật: September, 21, 2023
               </Text>
               <Text style={styles.body.content.group.text}>
                 Chủ sở hữu: Pham Minh Kha

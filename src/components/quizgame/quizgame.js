@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -9,9 +9,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
-  ToastAndroid,
 } from 'react-native';
 // import { AdMobRewarded } from 'react-native-admob';
 import LinearGradient from 'react-native-linear-gradient';
@@ -25,25 +25,35 @@ import ModalClaimReward from './modalClaimReward';
 
 // admob
 import {
-  RewardedAd,
-  RewardedAdEventType,
-  TestIds,
+  useRewardedAd
 } from 'react-native-google-mobile-ads';
 
-const adUnitId = __DEV__
-  ? TestIds.REWARDED
-  : 'ca-app-pub-8774393929760728/9059780648';
 
-const rewarded = RewardedAd.createForAdRequest(adUnitId, {
-  requestNonPersonalizedAdsOnly: true,
-  // keywords: ['fashion', 'clothing'],
-});
+
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-const QuizGame = ({navigation}) => {
+const QuizGame = ({ navigation }) => {
+
+  const adUnitId = __DEV__
+    // ? TestIds.REWARDED
+    ? "ca-app-pub-3940256099942544/5224354917" : 'ca-app-pub-8774393929760728/9059780648';
+
+  // const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  //   // keywords: ['fashion', 'clothing'],
+  // });
+
+  const { isLoaded, isClosed, load, show, isOpened,
+    isClicked,
+    error,
+    reward,
+    isEarnedReward } = useRewardedAd(adUnitId, {
+      requestNonPersonalizedAdsOnly: true,
+    });
+
   const [state, setState] = useState({
     DATA: QuizGameData,
   });
@@ -70,9 +80,9 @@ const QuizGame = ({navigation}) => {
         questionInfo:
           result !== null
             ? JSON.parse(result)
-            : {qsIndex: 0, score: score ? score : 0},
+            : { qsIndex: 0, score: score ? score : 0 },
         ignoreKey:
-          ignoreKey !== null ? JSON.parse(ignoreKey) : {lastUse: 5, time: null},
+          ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null },
       };
     } catch (error) {
       console.error(error);
@@ -100,66 +110,86 @@ const QuizGame = ({navigation}) => {
         });
       }
     });
-    // const unseubcribe = () => AdMobRewarded.addEventListener('rewarded', reward => {
-    //     // console.log('AdMobRewarded => rewarded', reward)
+
+
+    // const unsubscribeLoaded = rewarded.addAdEventListener(
+    //   RewardedAdEventType.LOADED,
+    //   () => {
+    //     console.log('RewardedAdEventType.LOADED');
+    //     setLoaded(true);
+    //   },
+    // );
+    // const unsubscribeEarned = rewarded.addAdEventListener(
+    //   RewardedAdEventType.EARNED_REWARD,
+    //   reward => {
+    //     rewarded.load();
+    //     console.log('User earned reward of ', reward);
     //     if (reward) {
-    //         if (aborted === false) {
-    //             storeIgnoreAsw({
-    //                 lastUse: 2,
-    //                 time: moment().format("YYYY-MM-DD"),
-    //             });
-    //             setIgnoreWrongAsw({
-    //                 ...ignoreWrongAsw, count: 2,
-    //             })
-    //             setModalVisible(false);
-    //         }
+    //       if (aborted === false) {
+    //         storeIgnoreAsw({
+    //           lastUse: 2,
+    //           time: moment().format('YYYY-MM-DD'),
+    //         });
+    //         setIgnoreWrongAsw({
+    //           ...ignoreWrongAsw,
+    //           count: 2,
+    //         });
+    //         setModalVisible(false);
+    //       }
     //     } else {
-    //         ToastAndroid.show("Phần thưởng không có sẵn hãy thử lại sau!");
+    //       ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
     //     }
-    // });
-    // return () => {
-    //     unseubcribe();
-    //     abortController.abort();
-    // }
+    //   },
+    // );
 
-    const unsubscribeLoaded = rewarded.addAdEventListener(
-      RewardedAdEventType.LOADED,
-      () => {
-        console.log('RewardedAdEventType.LOADED');
-      },
-    );
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      reward => {
-        console.log('User earned reward of ', reward);
-        if (reward) {
-          if (aborted === false) {
-            storeIgnoreAsw({
-              lastUse: 2,
-              time: moment().format('YYYY-MM-DD'),
-            });
-            setIgnoreWrongAsw({
-              ...ignoreWrongAsw,
-              count: 2,
-            });
-            setModalVisible(false);
-          }
-        } else {
-          ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
-        }
-      },
-    );
+    // const unsubscribeClosed = rewarded.addAdEventListener(
+    //   AdEventType.CLOSED,
+    //   reward => {
+    //     console.log('add closed', reward)
+    //     rewarded.load();
+    //   },
+    // );
 
-    // Start loading the rewarded ad straight away
-    rewarded.load();
 
     // Unsubscribe from events on unmount
     return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
+      // unsubscribeLoaded();
+      // unsubscribeEarned();
+      // unsubscribeClosed();
       abortController.abort();
     };
   }, []);
+
+  useEffect(() => {
+    // console.log(
+    //   isLoaded,
+    //   // isOpened,
+    //   // isClicked,
+    //   isClosed,
+    //   // error,
+    //   // reward,
+    //   isEarnedReward
+    // );
+    load();
+    if (isEarnedReward) {
+      storeIgnoreAsw({
+        lastUse: 2,
+        time: moment().format('YYYY-MM-DD'),
+      });
+      setIgnoreWrongAsw({
+        ...ignoreWrongAsw,
+        count: 2,
+      });
+      setModalVisible(false);
+      load();
+    }
+    if (error) {
+      ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
+    }
+    if (isClosed) {
+      load();
+    }
+  }, [error, isEarnedReward, isClosed, load, setIgnoreWrongAsw,]);
 
   const onRefresh = useCallback(() => {
     setState({
@@ -206,7 +236,7 @@ const QuizGame = ({navigation}) => {
 
   const storeData = async (qsIndex, score) => {
     try {
-      const jsonValue = JSON.stringify({qsIndex: qsIndex, score: score});
+      const jsonValue = JSON.stringify({ qsIndex: qsIndex, score: score });
       let keyIgnoreObj = {
         lastUse: 0,
         time: moment().format('YYYY-MM-DD'),
@@ -299,6 +329,8 @@ const QuizGame = ({navigation}) => {
     }
   };
 
+
+
   // console.log(
   //     "currentQuestionIndex", currentQuestionIndex,
   //     "currentOptionSelected", currentOptionSelected,
@@ -330,7 +362,7 @@ const QuizGame = ({navigation}) => {
               <View style={styles.iconGroupTop}>
                 <Icon
                   name={'head-question'}
-                  style={{color: '#5CB85C'}}
+                  style={{ color: '#5CB85C' }}
                   size={30}
                 />
                 <Text style={styles.scoreText}>
@@ -340,7 +372,7 @@ const QuizGame = ({navigation}) => {
               <View style={styles.iconGroupTop}>
                 <Icon
                   name={'checkbox-multiple-marked-circle'}
-                  style={{color: '#5CB85C'}}
+                  style={{ color: '#5CB85C' }}
                   size={30}
                 />
                 <Text style={styles.scoreText}>{score}</Text>
@@ -348,7 +380,7 @@ const QuizGame = ({navigation}) => {
               <View style={styles.iconGroupTop}>
                 <Icon
                   name={'key-outline'}
-                  style={{color: '#5CB85C'}}
+                  style={{ color: '#5CB85C' }}
                   size={30}
                 />
                 <Text style={styles.scoreText}>{ignoreWrongAsw.count}</Text>
@@ -372,7 +404,7 @@ const QuizGame = ({navigation}) => {
                   {state.DATA[currentQuestionIndex].question}
                 </Text>
               </View>
-              <Banner />
+              {/* <Banner /> */}
             </View>
             <View style={styles.options}>
               {state.DATA.length > 0 &&
@@ -388,8 +420,8 @@ const QuizGame = ({navigation}) => {
                             option === correctOption
                               ? '#5CB85C'
                               : option === currentOptionSelected
-                              ? '#D9534F'
-                              : '#0A81AB',
+                                ? '#D9534F'
+                                : '#0A81AB',
                         },
                       ]}
                       disabled={
@@ -400,7 +432,7 @@ const QuizGame = ({navigation}) => {
                       onPress={() => {
                         validateOption(option);
                       }}>
-                      <View style={{flex: 1}}>
+                      <View style={{ flex: 1 }}>
                         <Text style={[styles.option]}>{option}</Text>
                       </View>
 
@@ -416,7 +448,7 @@ const QuizGame = ({navigation}) => {
                           }}>
                           <Icon
                             name={'check-circle'}
-                            style={{color: '#5CB85C'}}
+                            style={{ color: '#5CB85C' }}
                             size={30}
                           />
                         </View>
@@ -432,7 +464,7 @@ const QuizGame = ({navigation}) => {
                           }}>
                           <Icon
                             name={'close-circle'}
-                            style={{color: '#D9534F'}}
+                            style={{ color: '#D9534F' }}
                             size={30}
                           />
                         </View>
@@ -444,15 +476,15 @@ const QuizGame = ({navigation}) => {
             <View style={styles.handle}>
               <LinearGradient
                 colors={['#0093E9', '#80D0C7']}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 1}}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
                 style={styles.buttonGroup}>
                 <TouchableOpacity
                   style={[styles.savebtn]}
                   onPress={() => storeData(currentQuestionIndex, score)}>
                   <Icon
                     name={'content-save-outline'}
-                    style={{color: 'white', marginRight: 5}}
+                    style={{ color: 'white', marginRight: 5 }}
                     size={25}
                   />
                   <Text style={styles.savebtnText}>{storeMessage}</Text>
@@ -460,8 +492,8 @@ const QuizGame = ({navigation}) => {
               </LinearGradient>
               <LinearGradient
                 colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 1}}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
                 style={styles.buttonGroup}>
                 <TouchableOpacity
                   style={[
@@ -471,8 +503,8 @@ const QuizGame = ({navigation}) => {
                         ignoreWrongAsw.count === 0
                           ? 1
                           : !isOptionDisabled
-                          ? 0.5
-                          : 1,
+                            ? 0.5
+                            : 1,
                     },
                   ]}
                   // disabled={ignoreWrongAsw.time !== null ? false : showNextButton ? false : true}
@@ -480,20 +512,20 @@ const QuizGame = ({navigation}) => {
                     ignoreWrongAsw.count === 0
                       ? false
                       : !isOptionDisabled
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                   onPress={handleNext}>
                   {ignoreWrongAsw.count === 0 ? (
                     <Icon
                       name={'key'}
-                      style={{color: 'white', marginRight: 5}}
+                      style={{ color: 'white', marginRight: 5 }}
                       size={25}
                     />
                   ) : (
                     <Icon
                       name={'skip-next'}
-                      style={{color: 'white', marginRight: 5}}
+                      style={{ color: 'white', marginRight: 5 }}
                       size={25}
                     />
                   )}
@@ -513,7 +545,8 @@ const QuizGame = ({navigation}) => {
           setModalVisible={setModalVisible}
           ignoreWrongAsw={ignoreWrongAsw}
           setIgnoreWrongAsw={setIgnoreWrongAsw}
-          rewarded={rewarded}
+          // rewarded={rewarded}
+          showRewardAd={show}
         />
       )}
     </SafeAreaView>
@@ -521,13 +554,13 @@ const QuizGame = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1},
+  container: { flex: 1 },
   contentContainerStyle: {
     flex: 1,
     top: 15,
   },
-  background: {flex: 1},
-  content: {flex: 1, backgroundColor: '#1E3163', paddingTop: 10},
+  background: { flex: 1 },
+  content: { flex: 1, backgroundColor: '#1E3163', paddingTop: 10 },
   score: {
     height: '8%',
     flexDirection: 'row',
@@ -552,14 +585,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  resetIcon: {marginLeft: 15},
+  resetIcon: { marginLeft: 15 },
   question: {
     height: '25%',
     width: '100%',
     justifyContent: 'space-between',
     minHeight: 30,
   },
-  questionContent: {paddingLeft: 10, height: '60%'},
+  questionContent: { paddingLeft: 10, height: '60%' },
   imageFrame: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -572,7 +605,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     aspectRatio: 4 / 2,
   },
-  questionText: {color: 'white', fontSize: 15, fontWeight: 'bold', padding: 5},
+  questionText: { color: 'white', fontSize: 15, fontWeight: 'bold', padding: 5 },
   options: {
     width: '100%',
     height: '45%',
@@ -626,7 +659,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  nextbtnText: {color: 'white', fontSize: 15, fontWeight: 'bold'},
+  nextbtnText: { color: 'white', fontSize: 15, fontWeight: 'bold' },
   savebtn: {
     height: 45,
     width: '100%',

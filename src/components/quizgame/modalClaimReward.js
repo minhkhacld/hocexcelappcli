@@ -17,15 +17,15 @@ const ModalClaimReward = ({
   modalVisible,
   setModalVisible,
   ignoreWrongAsw,
-  rewarded,
+  showRewardAd = () => { },
 }) => {
-  const showRewardAd = () => {
-    rewarded.show();
-    // RewardedAd()
-  };
+  // const showRewardAd = () => {
+  //   rewarded.show();
+  //   // RewardedAd()
+  // };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
         backgroundColor={'white'}
         translucent={true}
@@ -33,7 +33,7 @@ const ModalClaimReward = ({
       />
       <Modal
         animationType="slide"
-        style={{minHeight: 300}}
+        style={{ minHeight: 300 }}
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -56,8 +56,8 @@ Tip: Hãy bình tĩnh suy nghĩ thật kỹ chọn phương án đúng. Nếu b�
           <View style={styles.modalButonGroup}>
             <LinearGradient
               colors={['#0093E9', '#80D0C7']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 1}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
               style={styles.scanButtonGroup}>
               <TouchableOpacity
                 style={styles.modalActionButton}
@@ -76,8 +76,8 @@ Tip: Hãy bình tĩnh suy nghĩ thật kỹ chọn phương án đúng. Nếu b�
             </LinearGradient>
             <LinearGradient
               colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 1}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
               style={styles.scanButtonGroup}>
               <TouchableOpacity
                 style={styles.modalActionButton}
