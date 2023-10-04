@@ -46,7 +46,6 @@ const QuizgameResult = ({ navigation, route }) => {
                 <LinearGradient colors={['rgba(245,116,185,1)', 'rgba(89,97,223,1)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGroup}>
                     <TouchableOpacity onPress={() => {
                         navigation.navigate('QuizGame');
-                        // InterstitialAd();
                     }}
                         style={styles.goBackHome}>
                         <Text style={styles.textGoBackHome}>Quay về</Text>

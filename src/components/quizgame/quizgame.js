@@ -324,9 +324,10 @@ const QuizGame = ({ navigation }) => {
       setModalVisible(true);
       storeIgnoreAsw(keyIgnoreObj);
       storeData(currentQuestionIndex, score);
-    } else if (ignoreWrongAsw.time !== null && ignoreWrongAsw.count === 0) {
-      setModalVisible(true);
     }
+    //  else if (ignoreWrongAsw.time !== null && ignoreWrongAsw.count === 0) {
+    //   setModalVisible(true);
+    // }
   };
 
 

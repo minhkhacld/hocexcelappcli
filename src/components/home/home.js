@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, { useEffect, useCallback } from 'react';
 import {
   Dimensions,
   KeyboardAvoidingView,
@@ -6,9 +6,9 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FlatListData from '../../asset/data/function_data';
-import {setData} from '../../redux/reducer';
+import { setData } from '../../redux/reducer';
 import FullScreenSearch from '../header/fullScreenSearch';
 import Header from '../header/header';
 //component
@@ -19,7 +19,7 @@ import RemotePushController from '../notyfication/remotePushController';
 import DoubleTapToClose from '../exitApp/exitApp';
 import KeepAwake from 'react-native-keep-awake';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
-import {AppOpenAd, TestIds, AdEventType} from 'react-native-google-mobile-ads';
+import { AppOpenAd, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 
 const adUnitId = __DEV__
   ? TestIds.APP_OPEN
@@ -30,7 +30,7 @@ const appOpenAd = AppOpenAd.createForAdRequest(adUnitId, {
   keywords: ['fashion', 'clothing'],
 });
 
-const Home = ({navigation, route}) => {
+const Home = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const reducer = useSelector(store => {
     return store.Reducer;
@@ -61,7 +61,7 @@ const Home = ({navigation, route}) => {
     .flatMap(r => r);
   return (
     <SafeAreaView style={[styles.container]}>
-      <KeyboardAvoidingView style={{height: windowHeight}}>
+      <KeyboardAvoidingView style={{ height: windowHeight }}>
         <Header DATA={FlatListData} navigation={navigation} />
         <CardGroup CardGroupDATA={cardData} navigation={navigation} />
         <ListGroup ListGroupDATA={listData} navigation={navigation} />
