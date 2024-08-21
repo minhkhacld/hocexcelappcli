@@ -24,9 +24,12 @@ import FocusAwareStatusBar from '../header/statusBar';
 import ModalClaimReward from './modalClaimReward';
 
 // admob
+// import {
+//   useRewardedAd
+// } from 'react-native-google-mobile-ads';
 import {
   useRewardedAd
-} from 'react-native-google-mobile-ads';
+} from '../admob/rewardAds';
 
 
 
@@ -46,13 +49,15 @@ const QuizGame = ({ navigation }) => {
   //   // keywords: ['fashion', 'clothing'],
   // });
 
-  const { isLoaded, isClosed, load, show, isOpened,
-    isClicked,
-    error,
-    reward,
-    isEarnedReward } = useRewardedAd(adUnitId, {
-      requestNonPersonalizedAdsOnly: true,
-    });
+  // const { isLoaded, isClosed, load, show, isOpened,
+  //   isClicked,
+  //   error,
+  //   reward,
+  //   isEarnedReward } = useRewardedAd(adUnitId, {
+  //     requestNonPersonalizedAdsOnly: true,
+  //   });
+
+  const { isLoaded, error, show, load, isEarnedReward, } = useRewardedAd();
 
   const [state, setState] = useState({
     DATA: QuizGameData,
@@ -93,23 +98,23 @@ const QuizGame = ({ navigation }) => {
     let abortController = new AbortController();
     let aborted = abortController.signal.aborted;
 
-    localStorageData().then(async respone => {
-      let checkValidTime;
-      if (respone.ignoreKey.time !== null) {
-        // checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
-        checkValidTime = moment().diff(moment(respone.ignoreKey.time), 'days');
-      }
-      // console.log('checkValidTime', checkValidTime);
-      // console.log('loadlocastorage', respone)
-      if (aborted === false) {
-        setCurrentQuestionIndex(respone.questionInfo.qsIndex);
-        setScore(respone.questionInfo.score);
-        setIgnoreWrongAsw({
-          count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
-          time: checkValidTime > 0 ? null : respone.ignoreKey.time,
-        });
-      }
-    });
+    // localStorageData().then(async respone => {
+    //   let checkValidTime;
+    //   if (respone.ignoreKey.time !== null) {
+    //     // checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
+    //     checkValidTime = moment().diff(moment(respone.ignoreKey.time), 'days');
+    //   }
+    //   // console.log('checkValidTime', checkValidTime);
+    //   // console.log('loadlocastorage', respone)
+    //   if (aborted === false) {
+    //     setCurrentQuestionIndex(respone.questionInfo.qsIndex);
+    //     setScore(respone.questionInfo.score);
+    //     setIgnoreWrongAsw({
+    //       count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
+    //       time: checkValidTime > 0 ? null : respone.ignoreKey.time,
+    //     });
+    //   }
+    // });
 
 
     // const unsubscribeLoaded = rewarded.addAdEventListener(
@@ -170,7 +175,7 @@ const QuizGame = ({ navigation }) => {
     //   // reward,
     //   isEarnedReward
     // );
-    load();
+
     if (isEarnedReward) {
       storeIgnoreAsw({
         lastUse: 2,
@@ -181,15 +186,14 @@ const QuizGame = ({ navigation }) => {
         count: 2,
       });
       setModalVisible(false);
-      load();
     }
     if (error) {
       ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
     }
-    if (isClosed) {
-      load();
-    }
-  }, [error, isEarnedReward, isClosed, load, setIgnoreWrongAsw,]);
+    // if (isClosed) {
+    //   load();
+    // }
+  }, []);
 
   const onRefresh = useCallback(() => {
     setState({
@@ -281,10 +285,12 @@ const QuizGame = ({ navigation }) => {
         },
       );
     } else {
+
       setIgnoreWrongAsw({
         ...ignoreWrongAsw,
         count: ignoreWrongAsw.count > 0 ? ignoreWrongAsw.count - 1 : 0,
       });
+
       // errorClick.play();
       const errorClick = new Sound(
         'click_error.wav',
@@ -345,6 +351,7 @@ const QuizGame = ({ navigation }) => {
   //     "modalVisible", modalVisible,
   // );
   // console.log('intertial', ignoreWrongAsw);
+
 
   return (
     <SafeAreaView style={styles.container}>
