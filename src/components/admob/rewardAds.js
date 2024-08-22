@@ -1,76 +1,55 @@
-import { useState, useEffect } from 'react';
-import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
+import { useState, useEffect, useCallback } from 'react';
+import { RewardedAd, RewardedAdEventType, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
 // Replace with your own ad unit ID
 const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-8774393929760728/9059780648';
 
-export function useRewardedAd() {
-    const [rewardedAd, setRewardedAd] = useState(null);
+
+export const useRewardedAd = () => {
+
     const [isLoaded, setIsLoaded] = useState(false);
+    const [rewardedAd, setRewardedAd] = useState(null);
     const [error, setError] = useState(null);
     const [isEarnedReward, setIsEarnedReward] = useState(false)
 
     useEffect(() => {
-        const ad = RewardedAd.createForAdRequest(adUnitId, {
-            requestNonPersonalizedAdsOnly: true,
-        });
-
+        const ad = RewardedAd.createForAdRequest(adUnitId);
         setRewardedAd(ad);
+        const loadAd = () => ad.load();
 
-        const onAdLoaded = () => {
-            setIsLoaded(true)
-            setIsEarnedReward(false)
-        };
-        const onAdFailedToLoad = (error) => setError(error);
-
-        const onAdClosed = () => {
-            console.log('Ad closed');
-            // Optionally reload the ad here
-            load();
-        };
-
-        ad.addAdEventListener(RewardedAdEventType.LOADED, onAdLoaded);
-        // ad.addAdEventListener(RewardedAdEventType.EARNED_REWARD, onAdFailedToLoad);
-        ad.addAdEventListener(RewardedAdEventType.EARNED_REWARD, () => {
-            // Handle reward
-            // Reload the ad after receiving the reward
-            console.log('User rewarded');
-            setIsEarnedReward(true)
-            load();
+        // Set up event listeners
+        const unsubscribeLoaded = ad.addAdEventListener(RewardedAdEventType.LOADED, () => {
+            console.log('Ad is loaded...');
+            setIsLoaded(true);
+            setIsEarnedReward(false);
         });
 
-        // Load the ad
-        load();
+        const unsubscribeClosed = ad.addAdEventListener(RewardedAdEventType.EARNED_REWARD, (reward) => {
+            setIsLoaded(false);
+            setIsEarnedReward(true);
+            loadAd(); // Reload the ad after it's closed
+        });
 
-        // Clean up event listeners on unmount
+        loadAd();
+
         return () => {
-            ad.removeAllListeners();
+            unsubscribeLoaded();
+            unsubscribeClosed();
         };
     }, []);
 
-    const load = () => {
-        if (rewardedAd) {
-            console.log('Loading ad...');
-            rewardedAd.load();
-        }
-    };
-
-    const show = () => {
-        if (rewardedAd && isLoaded) {
-            console.log('Showing ad...');
+    const show = useCallback(() => {
+        if (isLoaded && rewardedAd) {
             rewardedAd.show();
+            console.log('Ad is showing...');
         } else {
-            console.log('Ad not loaded yet');
+            console.log('Ad is not loaded yet.');
+            rewardedAd.load();
+            setIsEarnedReward(false);
         }
-    };
+    }, [isLoaded, rewardedAd]);
 
-    console.log(isLoaded, isEarnedReward);
+    // console.log(isEarnedReward);
 
-    return {
-        isLoaded,
-        error,
-        show,
-        load,
-        isEarnedReward,
-    };
-}
+    return { show, isLoaded, isEarnedReward, rewardedAd };
+};

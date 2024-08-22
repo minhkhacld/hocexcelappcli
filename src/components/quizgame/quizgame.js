@@ -27,9 +27,11 @@ import ModalClaimReward from './modalClaimReward';
 // import {
 //   useRewardedAd
 // } from 'react-native-google-mobile-ads';
+import { AdEventType } from 'react-native-google-mobile-ads';
 import {
   useRewardedAd
 } from '../admob/rewardAds';
+import { useInterstitialAd } from "../admob/IntertitialAdd"
 
 
 
@@ -57,7 +59,8 @@ const QuizGame = ({ navigation }) => {
   //     requestNonPersonalizedAdsOnly: true,
   //   });
 
-  const { isLoaded, error, show, load, isEarnedReward, } = useRewardedAd();
+  const { isLoaded, show, rewardedAd, isEarnedReward, } = useRewardedAd();
+  const { showAd, isIntLoaded, interstitialAd } = useInterstitialAd(adUnitId);
 
   const [state, setState] = useState({
     DATA: QuizGameData,
@@ -76,25 +79,26 @@ const QuizGame = ({ navigation }) => {
   });
   const [modalVisible, setModalVisible] = useState(false);
 
-  const localStorageData = async () => {
-    try {
-      let result = await AsyncStorage.getItem('currentQuestionIndex');
-      let ignoreKey = await AsyncStorage.getItem('ignoreKey');
-      // console.log(result, ignoreKey);
-      return {
-        questionInfo:
-          result !== null
-            ? JSON.parse(result)
-            : { qsIndex: 0, score: score ? score : 0 },
-        ignoreKey:
-          ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null },
-      };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const localStorageData = async () => {
+  //   try {
+  //     let result = await AsyncStorage.getItem('currentQuestionIndex');
+  //     let ignoreKey = await AsyncStorage.getItem('ignoreKey');
+  //     // console.log(result, ignoreKey);
+  //     return {
+  //       questionInfo:
+  //         result !== null
+  //           ? JSON.parse(result)
+  //           : { qsIndex: 0, score: score ? score : 0 },
+  //       ignoreKey:
+  //         ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null },
+  //     };
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   useEffect(() => {
+
     let abortController = new AbortController();
     let aborted = abortController.signal.aborted;
 
@@ -116,65 +120,18 @@ const QuizGame = ({ navigation }) => {
     //   }
     // });
 
-
-    // const unsubscribeLoaded = rewarded.addAdEventListener(
-    //   RewardedAdEventType.LOADED,
-    //   () => {
-    //     console.log('RewardedAdEventType.LOADED');
-    //     setLoaded(true);
-    //   },
-    // );
-    // const unsubscribeEarned = rewarded.addAdEventListener(
-    //   RewardedAdEventType.EARNED_REWARD,
-    //   reward => {
-    //     rewarded.load();
-    //     console.log('User earned reward of ', reward);
-    //     if (reward) {
-    //       if (aborted === false) {
-    //         storeIgnoreAsw({
-    //           lastUse: 2,
-    //           time: moment().format('YYYY-MM-DD'),
-    //         });
-    //         setIgnoreWrongAsw({
-    //           ...ignoreWrongAsw,
-    //           count: 2,
-    //         });
-    //         setModalVisible(false);
-    //       }
-    //     } else {
-    //       ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
-    //     }
-    //   },
-    // );
-
-    // const unsubscribeClosed = rewarded.addAdEventListener(
-    //   AdEventType.CLOSED,
-    //   reward => {
-    //     console.log('add closed', reward)
-    //     rewarded.load();
-    //   },
-    // );
-
-
     // Unsubscribe from events on unmount
     return () => {
-      // unsubscribeLoaded();
-      // unsubscribeEarned();
-      // unsubscribeClosed();
+
       abortController.abort();
     };
   }, []);
 
   useEffect(() => {
-    // console.log(
-    //   isLoaded,
-    //   // isOpened,
-    //   // isClicked,
-    //   isClosed,
-    //   // error,
-    //   // reward,
-    //   isEarnedReward
-    // );
+
+    if (!isLoaded && rewardedAd) {
+      rewardedAd.load();
+    }
 
     if (isEarnedReward) {
       storeIgnoreAsw({
@@ -187,13 +144,14 @@ const QuizGame = ({ navigation }) => {
       });
       setModalVisible(false);
     }
-    if (error) {
-      ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
+
+  }, [isLoaded, isEarnedReward,]);
+
+  useEffect(() => {
+    if (!isIntLoaded && interstitialAd) {
+      interstitialAd.load()
     }
-    // if (isClosed) {
-    //   load();
-    // }
-  }, []);
+  }, [isIntLoaded, interstitialAd])
 
   const onRefresh = useCallback(() => {
     setState({
@@ -225,6 +183,7 @@ const QuizGame = ({ navigation }) => {
             });
             AsyncStorage.clear();
             // InterstitialAd();
+            showAd();
           },
         },
         {
