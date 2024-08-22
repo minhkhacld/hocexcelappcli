@@ -24,9 +24,14 @@ import FocusAwareStatusBar from '../header/statusBar';
 import ModalClaimReward from './modalClaimReward';
 
 // admob
+// import {
+//   useRewardedAd
+// } from 'react-native-google-mobile-ads';
+import { AdEventType } from 'react-native-google-mobile-ads';
 import {
   useRewardedAd
-} from 'react-native-google-mobile-ads';
+} from '../admob/rewardAds';
+import { useInterstitialAd } from "../admob/IntertitialAdd"
 
 
 
@@ -46,13 +51,16 @@ const QuizGame = ({ navigation }) => {
   //   // keywords: ['fashion', 'clothing'],
   // });
 
-  const { isLoaded, isClosed, load, show, isOpened,
-    isClicked,
-    error,
-    reward,
-    isEarnedReward } = useRewardedAd(adUnitId, {
-      requestNonPersonalizedAdsOnly: true,
-    });
+  // const { isLoaded, isClosed, load, show, isOpened,
+  //   isClicked,
+  //   error,
+  //   reward,
+  //   isEarnedReward } = useRewardedAd(adUnitId, {
+  //     requestNonPersonalizedAdsOnly: true,
+  //   });
+
+  const { isLoaded, show, rewardedAd, isEarnedReward, } = useRewardedAd();
+  const { showAd, isIntLoaded, interstitialAd } = useInterstitialAd(adUnitId);
 
   const [state, setState] = useState({
     DATA: QuizGameData,
@@ -71,106 +79,60 @@ const QuizGame = ({ navigation }) => {
   });
   const [modalVisible, setModalVisible] = useState(false);
 
-  const localStorageData = async () => {
-    try {
-      let result = await AsyncStorage.getItem('currentQuestionIndex');
-      let ignoreKey = await AsyncStorage.getItem('ignoreKey');
-      // console.log(result, ignoreKey);
-      return {
-        questionInfo:
-          result !== null
-            ? JSON.parse(result)
-            : { qsIndex: 0, score: score ? score : 0 },
-        ignoreKey:
-          ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null },
-      };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const localStorageData = async () => {
+  //   try {
+  //     let result = await AsyncStorage.getItem('currentQuestionIndex');
+  //     let ignoreKey = await AsyncStorage.getItem('ignoreKey');
+  //     // console.log(result, ignoreKey);
+  //     return {
+  //       questionInfo:
+  //         result !== null
+  //           ? JSON.parse(result)
+  //           : { qsIndex: 0, score: score ? score : 0 },
+  //       ignoreKey:
+  //         ignoreKey !== null ? JSON.parse(ignoreKey) : { lastUse: 5, time: null },
+  //     };
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   useEffect(() => {
+
     let abortController = new AbortController();
     let aborted = abortController.signal.aborted;
 
-    localStorageData().then(async respone => {
-      let checkValidTime;
-      if (respone.ignoreKey.time !== null) {
-        // checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
-        checkValidTime = moment().diff(moment(respone.ignoreKey.time), 'days');
-      }
-      // console.log('checkValidTime', checkValidTime);
-      // console.log('loadlocastorage', respone)
-      if (aborted === false) {
-        setCurrentQuestionIndex(respone.questionInfo.qsIndex);
-        setScore(respone.questionInfo.score);
-        setIgnoreWrongAsw({
-          count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
-          time: checkValidTime > 0 ? null : respone.ignoreKey.time,
-        });
-      }
-    });
-
-
-    // const unsubscribeLoaded = rewarded.addAdEventListener(
-    //   RewardedAdEventType.LOADED,
-    //   () => {
-    //     console.log('RewardedAdEventType.LOADED');
-    //     setLoaded(true);
-    //   },
-    // );
-    // const unsubscribeEarned = rewarded.addAdEventListener(
-    //   RewardedAdEventType.EARNED_REWARD,
-    //   reward => {
-    //     rewarded.load();
-    //     console.log('User earned reward of ', reward);
-    //     if (reward) {
-    //       if (aborted === false) {
-    //         storeIgnoreAsw({
-    //           lastUse: 2,
-    //           time: moment().format('YYYY-MM-DD'),
-    //         });
-    //         setIgnoreWrongAsw({
-    //           ...ignoreWrongAsw,
-    //           count: 2,
-    //         });
-    //         setModalVisible(false);
-    //       }
-    //     } else {
-    //       ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
-    //     }
-    //   },
-    // );
-
-    // const unsubscribeClosed = rewarded.addAdEventListener(
-    //   AdEventType.CLOSED,
-    //   reward => {
-    //     console.log('add closed', reward)
-    //     rewarded.load();
-    //   },
-    // );
-
+    // localStorageData().then(async respone => {
+    //   let checkValidTime;
+    //   if (respone.ignoreKey.time !== null) {
+    //     // checkValidTime = moment().day() - moment(respone.ignoreKey.time).day()
+    //     checkValidTime = moment().diff(moment(respone.ignoreKey.time), 'days');
+    //   }
+    //   // console.log('checkValidTime', checkValidTime);
+    //   // console.log('loadlocastorage', respone)
+    //   if (aborted === false) {
+    //     setCurrentQuestionIndex(respone.questionInfo.qsIndex);
+    //     setScore(respone.questionInfo.score);
+    //     setIgnoreWrongAsw({
+    //       count: checkValidTime > 0 ? 5 : respone.ignoreKey.lastUse,
+    //       time: checkValidTime > 0 ? null : respone.ignoreKey.time,
+    //     });
+    //   }
+    // });
 
     // Unsubscribe from events on unmount
     return () => {
-      // unsubscribeLoaded();
-      // unsubscribeEarned();
-      // unsubscribeClosed();
+
       abortController.abort();
     };
   }, []);
 
   useEffect(() => {
-    // console.log(
-    //   isLoaded,
-    //   // isOpened,
-    //   // isClicked,
-    //   isClosed,
-    //   // error,
-    //   // reward,
-    //   isEarnedReward
-    // );
-    load();
+
+    if (!isLoaded && rewardedAd) {
+      rewardedAd.load();
+    }
+
     if (isEarnedReward) {
       storeIgnoreAsw({
         lastUse: 2,
@@ -181,15 +143,15 @@ const QuizGame = ({ navigation }) => {
         count: 2,
       });
       setModalVisible(false);
-      load();
     }
-    if (error) {
-      ToastAndroid.show('Phần thưởng không có sẵn hãy thử lại sau!');
+
+  }, [isLoaded, isEarnedReward,]);
+
+  useEffect(() => {
+    if (!isIntLoaded && interstitialAd) {
+      interstitialAd.load()
     }
-    if (isClosed) {
-      load();
-    }
-  }, [error, isEarnedReward, isClosed, load, setIgnoreWrongAsw,]);
+  }, [isIntLoaded, interstitialAd])
 
   const onRefresh = useCallback(() => {
     setState({
@@ -221,6 +183,7 @@ const QuizGame = ({ navigation }) => {
             });
             AsyncStorage.clear();
             // InterstitialAd();
+            showAd();
           },
         },
         {
@@ -281,10 +244,12 @@ const QuizGame = ({ navigation }) => {
         },
       );
     } else {
+
       setIgnoreWrongAsw({
         ...ignoreWrongAsw,
         count: ignoreWrongAsw.count > 0 ? ignoreWrongAsw.count - 1 : 0,
       });
+
       // errorClick.play();
       const errorClick = new Sound(
         'click_error.wav',
@@ -345,6 +310,7 @@ const QuizGame = ({ navigation }) => {
   //     "modalVisible", modalVisible,
   // );
   // console.log('intertial', ignoreWrongAsw);
+
 
   return (
     <SafeAreaView style={styles.container}>

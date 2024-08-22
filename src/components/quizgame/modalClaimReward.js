@@ -19,6 +19,7 @@ const ModalClaimReward = ({
   ignoreWrongAsw,
   showRewardAd = () => { },
 }) => {
+
   // const showRewardAd = () => {
   //   rewarded.show();
   //   // RewardedAd()
@@ -47,12 +48,10 @@ const ModalClaimReward = ({
               <Icon style={styles.alertIcon} name={'alert-decagram'} />
             </View>
             <Text style={styles.message}>
-              {ignoreWrongAsw.time === null
-                ? `Bạn đã sử dụng hết 5 lượt chọn sai ngày hôm nay. Hãy thư giãn, ôn tập lại và quay lại tiếp tục thử sức vào ngày mai. Hoặc bạn có thể chọn mở khóa xem quảng cáo dưới đây để thêm 2 chìa khóa.`
-                : `Opp! Bạn đã dùng hết lượt hôm nay, hãy quay lại vào ngày mai. 
-
+              {`Opp! Bạn đã dùng hết lượt hôm nay, xem quảng cáo để nhận thêm 2 chìa khóa để vượt qua thử thách. 
 Tip: Hãy bình tĩnh suy nghĩ thật kỹ chọn phương án đúng. Nếu bạn không chắc hãy cũng cố lại kiến thức trước!`}
             </Text>
+
           </View>
           <View style={styles.modalButonGroup}>
             <LinearGradient
@@ -91,9 +90,7 @@ Tip: Hãy bình tĩnh suy nghĩ thật kỹ chọn phương án đúng. Nếu b�
                       fontWeight: 'bold',
                       marginRight: 5,
                     }}>
-                    {ignoreWrongAsw.count === 0
-                      ? 'Lấy chìa'
-                      : '+' + ignoreWrongAsw.count}
+                    Lấy 2 chìa
                   </Text>
                   <Icon name={'key'} size={30} color={'yellow'} />
                 </TouchableOpacity>
@@ -151,7 +148,7 @@ const styles = StyleSheet.create({
   message: {
     width: '100%',
     height: '50%',
-    minHeight: 100,
+    minHeight: 200,
     color: '#14279B',
     padding: 20,
     fontSize: 20,

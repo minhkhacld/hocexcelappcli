@@ -144,8 +144,8 @@ android {
         applicationId 'com.hocexcel'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 17
-        versionName '1.2.7'
+        versionCode 19
+        versionName '1.4'
 
     //admob
      multiDexEnabled true
@@ -235,11 +235,16 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-ads:19.8.0'
     implementation 'com.android.support:multidex:1.0.3'
     //firebase
-    implementation project(':react-native-push-notification')
     implementation 'com.google.firebase:firebase-analytics:17.3.0'
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    
+    implementation ("androidx.appcompat:appcompat:1.3.1") {
+        version {
+            strictly '1.3.1'
+        }
+    }
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

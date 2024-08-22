@@ -15,7 +15,7 @@ import Header from '../header/header';
 import CardGroup from './cardgroup/cardgroup';
 import ListGroup from './listgroup/listgroup';
 // import {InterstitialAd} from '../admob/imperativeAd';
-import RemotePushController from '../notyfication/remotePushController';
+// import RemotePushController from '../notyfication/remotePushController';
 import DoubleTapToClose from '../exitApp/exitApp';
 import KeepAwake from 'react-native-keep-awake';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
@@ -71,9 +71,9 @@ const Home = ({ navigation, route }) => {
       </KeyboardAvoidingView>
       <DoubleTapToClose />
       <KeepAwake />
-      <View>
+      {/* <View>
         <RemotePushController />
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };
